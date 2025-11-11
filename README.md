@@ -6,6 +6,7 @@
 [![Downloads](https://pepy.tech/badge/GenomeSyn2)](https://pepy.tech/project/GenomeSyn2)
 
 The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
+
 |         |                                                                  |
 |         |                                                                  |
 | Authors | [Zu-Wen Zhou](https://github.com/banzhou59)                      |
@@ -93,6 +94,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
