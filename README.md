@@ -20,7 +20,7 @@ The tool integrates multi-genome synteny relationships with diverse statistical 
 GenomeSyn2 requires a Linux environment with both Perl and Python installed, along with several bioinformatics tools and libraries.
 All dependencies can be easily installed using a Conda environment defined in the provided environment.yml file.
 
-***Perl and perl modules***
+***1. Perl and perl modules***
 
 **[Perl](https://www.perl.org)** ≥ 5.32 — the main language used for running GenomeSyn2 scripts
 
@@ -28,13 +28,13 @@ All dependencies can be easily installed using a Conda environment defined in th
 
 **[perl-svg](https://anaconda.org/bioconda/perl-svg)** — supports generation of scalable vector graphics (SVG) output
 
-***Python and python modules***
+***2. Python and python modules***
 
 **[Python](https://www.python.org)** ≥ 3.8 — required for auxiliary data visualization and conversion tools
 
 **[cairosvg](https://cairosvg.org/)** — used for converting SVG files to PNG or PDF formats
 
-***External bioinformatics tools***
+***3. Other bioinformatics tools***
 
 **[MUMmer](https://anaconda.org/bioconda/mummer)** — for whole-genome alignment and synteny detection
 
@@ -94,6 +94,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
