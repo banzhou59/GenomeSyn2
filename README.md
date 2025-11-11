@@ -7,13 +7,11 @@
 
 The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
 
-|Author Info|                                                                           |
-|---------|-----------------------------------------------------------------------------|
-| Author | [Zu-Wen Zhou](https://github.com/banzhou59)                                  |
-|Corresponding author| [Ling-Ling Chen](https://lst.gxu.edu.cn/info/1077/2334.htm)      |
-|Corresponding author| [Jia-Ming Song](http://agronomy.swu.edu.cn/info/1081/5164.htm)   |
-| Email   | jmsong@swu.edu.cn, llchen@gxu.edu.cn, 784012725@qq.com                      |
-
+|Author Info|                                                                                           |
+|---------|---------------------------------------------------------------------------------------------|
+| Author | [Zu-Wen Zhou](https://github.com/banzhou59) 784012725@qq.com                                 |
+|Corresponding author| [Ling-Ling Chen](https://lst.gxu.edu.cn/info/1077/2334.htm) jmsong@swu.edu.cn    |
+|Corresponding author| [Jia-Ming Song](http://agronomy.swu.edu.cn/info/1081/5164.htm) llchen@gxu.edu.cn |
 
 ## Dependencies
 
@@ -95,6 +93,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
