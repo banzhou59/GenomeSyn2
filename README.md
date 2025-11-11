@@ -9,7 +9,7 @@ The tool integrates multi-genome synteny relationships with diverse statistical 
 
 |Author Info|                                                                                           |
 |---------|---------------------------------------------------------------------------------------------|
-| Author | [Zu-Wen Zhou](https://github.com/banzhou59) 784012725@qq.com                                 |
+| Author | Zu-Wen Zhou (https://github.com/banzhou59) 784012725@qq.com                                 |
 |Corresponding author| [Ling-Ling Chen](https://lst.gxu.edu.cn/info/1077/2334.htm) jmsong@swu.edu.cn    |
 |Corresponding author| [Jia-Ming Song](http://agronomy.swu.edu.cn/info/1081/5164.htm) llchen@gxu.edu.cn |
 
@@ -93,6 +93,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
