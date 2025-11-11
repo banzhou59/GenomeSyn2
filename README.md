@@ -50,7 +50,8 @@ All dependencies can be easily installed using a Conda environment defined in th
 
 **[mmseqs2](https://anaconda.org/bioconda/mmseqs2)** — for large-scale sequence clustering and homology search
 
-After activating the Conda environment install GenomeSyn2 using one of the following options.
+
+After installing the dependencies with Conda and activating the Conda environment, install GenomeSyn2 using **one** of the following options:
 
 ```
 conda env create -f environment.yml
@@ -93,6 +94,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
