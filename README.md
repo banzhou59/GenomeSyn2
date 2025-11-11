@@ -24,31 +24,31 @@ All dependencies can be easily installed using a Conda environment defined in th
 
 **[Perl](https://www.perl.org)** ≥ 5.32 — the main language used for running GenomeSyn2 scripts
 
-[perl-bioperl-core](https://anaconda.org/bioconda/perl-bioperl-core) — provides BioPerl functionalities for sequence and annotation processing
+**[perl-bioperl-core](https://anaconda.org/bioconda/perl-bioperl-core)** — provides BioPerl functionalities for sequence and annotation processing
 
-[perl-svg](https://anaconda.org/bioconda/perl-svg) — supports generation of scalable vector graphics (SVG) output
+**[perl-svg](https://anaconda.org/bioconda/perl-svg)** — supports generation of scalable vector graphics (SVG) output
 
 ***Python and python modules***
 
-[Python](https://www.python.org) ≥ 3.8 — required for auxiliary data visualization and conversion tools
+**[Python](https://www.python.org)** ≥ 3.8 — required for auxiliary data visualization and conversion tools
 
-[cairosvg](https://cairosvg.org/) — used for converting SVG files to PNG or PDF formats
+**[cairosvg](https://cairosvg.org/)** — used for converting SVG files to PNG or PDF formats
 
 ***External bioinformatics tools***
 
-[mummer](https://anaconda.org/bioconda/mummer) — for whole-genome alignment and synteny detection
+**[MUMmer](https://anaconda.org/bioconda/mummer)** — for whole-genome alignment and synteny detection
 
 [minimap2](https://anaconda.org/bioconda/minimap2) — for fast and accurate sequence alignment
 
-[gffread](https://anaconda.org/bioconda/gffread) — for extracting transcript and protein sequences from GFF/GTF files
+**[gffread](https://anaconda.org/bioconda/gffread)** — for extracting transcript and protein sequences from GFF/GTF files
 
-[seqkit](https://anaconda.org/bioconda/seqkit) — for efficient FASTA/FASTQ file manipulation
+**[Seqkit](https://anaconda.org/bioconda/seqkit)** — for efficient FASTA/FASTQ file manipulation
 
-[blast](https://anaconda.org/bioconda/blast) — for sequence similarity searches
+**[blast](https://anaconda.org/bioconda/blast)** — for sequence similarity searches
 
-[diamond](https://anaconda.org/bioconda/diamond) — for fast protein alignment
+**[DIAMOND](https://anaconda.org/bioconda/diamond)** — for fast protein alignment
 
-[mmseqs2](https://anaconda.org/bioconda/mmseqs2) — for large-scale sequence clustering and homology search
+**[mmseqs2](https://anaconda.org/bioconda/mmseqs2)** — for large-scale sequence clustering and homology search
 
 After activating the Conda environment install GenomeSyn2 using one of the following options.
 
@@ -93,6 +93,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
