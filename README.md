@@ -20,15 +20,9 @@ The tool integrates multi-genome synteny relationships with diverse statistical 
 GenomeSyn2 requires a Linux environment with both Perl and Python installed, along with several bioinformatics tools and libraries.
 All dependencies can be easily installed using a Conda environment defined in the provided environment.yml file.
 
-```
-conda env create -f environment.yml
-
-conda activate GenomeSyn2
-```
-
 ***Perl and perl modules***
 
-[Perl](https://www.perl.org) ≥ 5.32 — the main language used for running GenomeSyn2 scripts
+**[Perl](https://www.perl.org)** ≥ 5.32 — the main language used for running GenomeSyn2 scripts
 
 [perl-bioperl-core](https://anaconda.org/bioconda/perl-bioperl-core) — provides BioPerl functionalities for sequence and annotation processing
 
@@ -57,6 +51,12 @@ conda activate GenomeSyn2
 [mmseqs2](https://anaconda.org/bioconda/mmseqs2) — for large-scale sequence clustering and homology search
 
 After activating the Conda environment install GenomeSyn2 using one of the following options.
+
+```
+conda env create -f environment.yml
+
+conda activate GenomeSyn2
+```
 
 ## Installation
 
@@ -93,6 +93,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
