@@ -69,9 +69,13 @@ To enable running GenomeSyn2.pl from any directory, it is recommended to add it 
 
 ```
 git clone https://github.com/banzhou59/GenomeSyn2.git
+
 cd ./GenomeSyn2/bin/
+
 chmod +x *.pl *.sh
+
 # To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
+
 export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
 
@@ -79,8 +83,11 @@ export PATH=/your_path/GenomeSyn2/bin:$PATH
 
 ```
 wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2.tar.gz
+
 tar -zxvf GenomeSyn2.tar.gz
+
 # To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
+
 export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
 
@@ -93,52 +100,27 @@ GenomeSyn2 --help
 ```
 
 # Quick start
+1) The following commands demonstrate how to run GenomeSyn2 using different genome alignment software.
 
-GenomeSyn2.pl --align mummer --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GenomeSyn2.mummer.log
+   GenomeSyn2 --align mummer --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GenomeSyn2.mummer.log
 
-GenomeSyn2.pl --align minimap2 --genome ./genome_path/ --outdir ./minimap2/ --thread 30 > GenomeSyn2.minimap2.log
+   GenomeSyn2 --align minimap2 --genome ./genome_path/ --outdir ./minimap2/ --thread 30 > GenomeSyn2.minimap2.log
 
-GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir ./blastp/ --thread 30 > GenomeSyn2.blastp.log
+2) The following commands demonstrate how to run GenomeSyn2 for protein alignment using different alignment tools.
 
-GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
+   GenomeSyn2 --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir ./blastp/ --thread 30 > GenomeSyn2.blastp.log
 
-GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+   GenomeSyn2 --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
+   GenomeSyn2 --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
 
+3) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
 
+   GenomeSyn2 --vcf ./parents.progeny.snps.genotype.vcf --bin 50000
 
+4) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   GenomeSyn2 --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed
 
 
 
