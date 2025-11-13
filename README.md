@@ -63,16 +63,25 @@ conda activate GenomeSyn2
 
 ### Installation options
 
-1. Use pip to install the latest development version directly from this repo.
+1. Use git to clone the project repository:
+GenomeSyn2 does not require compilation and can be run directly.
+To enable running GenomeSyn2.pl from any directory, it is recommended to add it to the environment variable $PATH.
 
 ```
-pip install git+https://github.com/banzhou59/GenomeSyn2.git
+git clone https://github.com/banzhou59/GenomeSyn2.git
+cd ./GenomeSyn2/bin/
+chmod +x *.pl *.sh
+# To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
+export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
 
-2. Install latest release from PyPi.
+2. Download the GenomeSyn2.tar.gz
 
 ```
-pip install GenomeSyn2
+wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2.tar.gz
+tar -zxvf GenomeSyn2.tar.gz
+# To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
+export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
 
 ### Test Installation
@@ -94,6 +103,7 @@ GenomeSyn2.pl --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir
 GenomeSyn2.pl --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
 
 GenomeSyn2.pl --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+
 
 
 
