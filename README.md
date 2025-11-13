@@ -1,6 +1,5 @@
 # [GenomeSyn-II: An Extensible Synteny Visualization Tool Supporting Multi-Genome Comparison and Flexible Annotation Display](http://cbi.gxu.edu.cn/GenomeSyn2/)
 
-[![PyPI version](https://img.shields.io/pypi/v/GenomeSyn2.svg)](https://pypi.org/project/GenomeSyn2/)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Build Status](https://github.com/yourusername/GenomeSyn2/workflows/build/badge.svg)](https://github.com/yourusername/GenomeSyn2/actions)
 [![Downloads](https://pepy.tech/badge/GenomeSyn2)](https://pepy.tech/project/GenomeSyn2)
@@ -121,6 +120,7 @@ GenomeSyn2 --help
 4) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
    GenomeSyn2 --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed
+
 
 
 
