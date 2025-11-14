@@ -1,0 +1,19 @@
+name: GenomeSyn2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - perl=5.32
+  - perl-bioperl-core
+  - perl-svg
+  - python>=3.8
+  - cairosvg
+  - mummer
+  - minimap2
+  - gffread
+  - seqkit
+  - blast
+  - diamond
+  - mmseqs2
+  - pip
