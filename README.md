@@ -1,20 +1,9 @@
-# [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2.tar.gz)
+# [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2-v1.0.0.tar.gz)
 
-<!-- GitHub Actions Build Status -->
-[![Build Status](https://github.com/banzhou59/GenomeSyn2/workflows/build/badge.svg)](https://github.com/banzhou59/GenomeSyn2/actions)
-
-<!-- Bioconda 下载量 -->
-[![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
-
-<!-- GitHub Release 版本 -->
 [![GitHub release](https://img.shields.io/github/v/release/banzhou59/GenomeSyn2?label=release)](https://github.com/banzhou59/GenomeSyn2/releases)
-
-<!-- License -->
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
-
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
-[![Build Status](https://github.com/yourusername/GenomeSyn2/workflows/build/badge.svg)](https://github.com/yourusername/GenomeSyn2/actions)
-[![Downloads](https://pepy.tech/badge/GenomeSyn2)](https://pepy.tech/project/GenomeSyn2)
+[![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
 
 The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
 
@@ -144,6 +133,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+
 
 
 
