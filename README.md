@@ -101,25 +101,33 @@ GenomeSyn2 --help
 # Quick start
 1) The following commands demonstrate how to run GenomeSyn2 using different genome alignment software.
 
-   GenomeSyn2 --align mummer --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GenomeSyn2.mummer.log
+```
+   GenomeSyn2 --align mummer --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GS2.mummer.log
 
-   GenomeSyn2 --align minimap2 --genome ./genome_path/ --outdir ./minimap2/ --thread 30 > GenomeSyn2.minimap2.log
+   GenomeSyn2 --align minimap2 --genome ./genome_path/ --outdir ./minimap2/ --thread 30 > GS2.minimap2.log
+```
 
 2) The following commands demonstrate how to run GenomeSyn2 for protein alignment using different alignment tools.
 
-   GenomeSyn2 --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir ./blastp/ --thread 30 > GenomeSyn2.blastp.log
+```
+   GenomeSyn2 --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir ./blastp/ --thread 30 > GS2.blastp.log
 
-   GenomeSyn2 --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GenomeSyn2.mmseqs.log
+   GenomeSyn2 --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GS2.mmseqs.log
 
-   GenomeSyn2 --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GenomeSyn2.diamond.log
+   GenomeSyn2 --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GS2.diamond.log
+```
 
 3) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
 
-   GenomeSyn2 --vcf ./parents.progeny.snps.genotype.vcf --bin 50000
+```
+   GenomeSyn2 --vcf ./parents.progeny.snps.genotype.vcf --bin 50000 > GS2.vcf.log
+```
 
 4) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
-   GenomeSyn2 --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed
+```
+   GenomeSyn2 --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
+```
 
 
 
