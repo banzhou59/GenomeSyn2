@@ -120,14 +120,15 @@ GenomeSyn2 --help
 3) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
 
 ```
-   GenomeSyn2 --vcf ./parents.progeny.snps.genotype.vcf --bin 50000 > GS2.vcf.log
+   GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
 ```
 
 4) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
 ```
-   GenomeSyn2 --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
+   GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+
 
 
 
