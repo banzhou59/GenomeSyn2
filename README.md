@@ -134,6 +134,54 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
 
+# Configuration file format
+
+```
+less total.conf
+
+[genome_info]
+# gonomes_filetype = (fasta/bed)
+gonomes_filetype = bed
+gonomes_list = chr_length.info.tsv
+
+[synteny_info]
+# line_type = (curve/line)
+line_type = curve
+synteny_list = synteny.info.tsv
+
+[save_info]
+# figure_type = (svg/pdf)
+figure_type = pdf
+savefig1 = GenomeSyn2.figure1.pdf
+savefig2 = GenomeSyn2.figure2.pdf
+
+[centromere_info]
+centromere_list=centromere.info.tsv
+
+[telomere_info]
+telomere_list=telomere.info.tsv
+telomere_color=#441680
+opacity=100%
+
+[show_region]
+# region = (genome_Name:ChrID:start-end)
+region = MH63:Chr10:24,850,000-24,885,000
+gene_list = gene.info.tsv
+
+[anno_info:no]
+anno_number=[1,2,3,4,5,6,7]
+anno_name=[PAV,SNP,TE,GC Content,Gypsy,Copia,Gene density]
+anno_color=['#5FB6DE','#0000FF','#3774B9','#000000','#00FF00','#F5F57A','#368F5C']
+anno_type=[rectangle,barplot,barplot,lineplot,lineplot,lineplot,heatmap]
+anno_position=[top,top,bottom,top,bottom,bottom,middle]
+anno_height=[5,5,5,5,5,5,5]
+min_max_value=[normal,auto,normal,0.4:0.5,normal,normal,normal]
+anno_window=[none,none,100000,none,100000,100000,100000]
+opacity=[50%,100%,100%,100%,100%,100%,100%]
+file_type=[bed,bed,gff3,bed,gff3,gff3,gff3]
+filter_type=[none,none,none,none,none,none,gene]
+anno_list=[PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
+```
 
 
 
