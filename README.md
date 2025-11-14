@@ -98,6 +98,7 @@ If installed successfully, you can check the version with:
 GenomeSyn2 --help
 
 # Download the test data of GenomeSyn2
+
 wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
 
@@ -131,6 +132,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+
 
 
 
