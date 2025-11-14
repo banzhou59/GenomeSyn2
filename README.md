@@ -1,6 +1,6 @@
 # [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2.tar.gz)
 <!-- GitHub Actions Build Status -->
-[![Build Status](https://github.com/banzhou59/GenomeSyn2/workflows/build/badge.svg)](https://github.com/yourusername/GenomeSyn2/actions)
+[![Build Status](https://github.com/banzhou59/GenomeSyn2/workflows/build/badge.svg)](https://github.com/banzhou59/GenomeSyn2/actions)
 
 <!-- Bioconda 下载量 -->
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
@@ -143,6 +143,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+
 
 
 
