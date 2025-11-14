@@ -1,4 +1,5 @@
 # [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2.tar.gz)
+
 <!-- GitHub Actions Build Status -->
 [![Build Status](https://github.com/banzhou59/GenomeSyn2/workflows/build/badge.svg)](https://github.com/banzhou59/GenomeSyn2/actions)
 
@@ -6,10 +7,10 @@
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
 
 <!-- GitHub Release 版本 -->
-[![GitHub release](https://img.shields.io/github/v/release/yourusername/GenomeSyn2?label=release)](https://github.com/yourusername/GenomeSyn2/releases)
+[![GitHub release](https://img.shields.io/github/v/release/banzhou59/GenomeSyn2?label=release)](https://github.com/banzhou59/GenomeSyn2/releases)
 
 <!-- License -->
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Build Status](https://github.com/yourusername/GenomeSyn2/workflows/build/badge.svg)](https://github.com/yourusername/GenomeSyn2/actions)
@@ -143,6 +144,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+
 
 
 
