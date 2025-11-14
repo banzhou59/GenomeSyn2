@@ -1,4 +1,4 @@
-# [GenomeSyn-II: An Extensible Synteny Visualization Tool Supporting Multi-Genome Comparison and Flexible Annotation Display](http://cbi.gxu.edu.cn/GenomeSyn2/)
+# [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2.tar.gz)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Build Status](https://github.com/yourusername/GenomeSyn2/workflows/build/badge.svg)](https://github.com/yourusername/GenomeSyn2/actions)
@@ -128,6 +128,7 @@ GenomeSyn2 --help
 ```
    GenomeSyn2 --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+
 
 
 
