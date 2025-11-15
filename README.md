@@ -5,15 +5,15 @@
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
 
-The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
-
 |    Author   |  E-mail                                                                |
 |-------------|------------------------------------------------------------------------|
 | [Zu-Wen Zhou](https://github.com/banzhou59)                 | `784012725@qq.com`     |
 | [Ling-Ling Chen](https://lst.gxu.edu.cn/info/1077/2334.htm) | `jmsong@swu.edu.cn`    |
 | [Jia-Ming Song](http://agronomy.swu.edu.cn/info/1081/5164.htm) | `llchen@gxu.edu.cn` |
 
-<img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="400"/>
+The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
+
+<img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="600"/>
 
 ## Dependencies
 
@@ -411,6 +411,7 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
 
