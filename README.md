@@ -196,3 +196,4 @@ anno_list=[PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copi
 
 
 
+
