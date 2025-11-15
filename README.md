@@ -101,7 +101,7 @@ All dependencies can be easily installed using a Conda environment defined in th
 
 ***3. Other bioinformatics tools***
 
-**[MUMmer](https://anaconda.org/bioconda/mummer)** — for whole-genome alignment and synteny detection
+**[MUMmer4](https://anaconda.org/bioconda/mummer4)** — for whole-genome alignment and synteny detection
 
 [minimap2](https://anaconda.org/bioconda/minimap2) — for fast and accurate sequence alignment
 
@@ -276,6 +276,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
