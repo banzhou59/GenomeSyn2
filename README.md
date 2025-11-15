@@ -30,11 +30,12 @@
 - [Usage](#Usage)
   - [Test](#Test-installation)
   - [Inputs](#Inputs)
-    - [1. Quick start](#1-quick-start)
-    - [2. GenomeSyn2 --conf total.conf](#2-genomesyn2---conf-totalconf)
-    - [3. GenomeSyn2 --conf local.conf](#3-genomesyn2---conf-localconf)
-    - [4. GenomeSyn2 --vcf input.vcf](#4-genomesyn2---vcf-inputvcf)
-    - [5. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed](#5-genomesyn2---indentity-snpindbed---density-snpdenbed)
+    - 1. [Quick start](#1-quick-start)
+    - 2. [Drawing genome synteny diagrams and annotation information](#2-drawing-genome-synteny-diagrams-and-annotation-information)
+    - 3. [Local gene structure view](#3-local-gene-structure-view)
+    - 4. [Multi-parental origins contribution view](#5-multi-parental-origins-contribution-view)
+      - [Calculate SNP density and SNP identity from a VCF file](#a-calculate-snp-density-and-snp-identity-from-a-vcf-file-to-visualize-multi-parental-origin-contributions)
+      - [Plot multi-parental origins contribution](#b-based-on-snp-density-and-snp-identity-statistics-plot-the-multi-parental-origins-contribution)
   - [Outputs](#Outputs)
 - [Citation](#citation)
 
@@ -149,7 +150,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
 
 ## 1. Quick start
-1) The following commands demonstrate how to run GenomeSyn2 using different genome alignment software.
+a) The following commands demonstrate how to run GenomeSyn2 using different genome alignment software.
 
 ```
    GenomeSyn2 --align mummer --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GS2.mummer.log
@@ -157,7 +158,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
    GenomeSyn2 --align minimap2 --genome ./genome_path/ --outdir ./minimap2/ --thread 30 > GS2.minimap2.log
 ```
 
-2) The following commands demonstrate how to run GenomeSyn2 for protein alignment using different alignment tools.
+b) The following commands demonstrate how to run GenomeSyn2 for protein alignment using different alignment tools.
 
 ```
    GenomeSyn2 --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir ./blastp/ --thread 30 > GS2.blastp.log
@@ -166,29 +167,88 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 
    GenomeSyn2 --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GS2.diamond.log
 ```
-## 2. GenomeSyn2 --conf total.conf
 
+## 2. Drawing genome synteny diagrams and annotation information
 ```
-# GenomeSyn2 --conf total.conf
+## GenomeSyn2 --conf total.conf
 
+
+# less total.conf
+[genome_info]
+# gonomes_filetype = (fasta/bed)
+# Type of genome description (fasta or bed)
+gonomes_filetype = bed
+# List of genome chromosome sizes or fasta files
+gonomes_list = chr_length.info.tsv
+
+[synteny_info]
+# line_type = (curve/line)
+# Style for connecting syntenic blocks. (curve or line)
+line_type = curve
+# File containing synteny information between genomes.
+synteny_list = synteny.info.tsv
+
+[save_info]
+# figure_type = (svg/pdf/png)
+# File format for saving figures. (svg, pdf, png)
+figure_type = pdf
+# savefig1 / savefig2: Output filenames for figure 1 and figure 2.
+savefig1 = GenomeSyn2.figure1.pdf
+savefig2 = GenomeSyn2.figure2.pdf
+
+[centromere_info]
+centromere_list = centromere.info.tsv
+
+[telomere_info]
+telomere_list = telomere.info.tsv
+telomere_color = #441680
+opacity = 100%
+
+[anno_info]
+anno_number = [1,2,3,4,5,6,7]
+anno_name = [PAV,SNP,TE,GC Content,Gypsy,Copia,Gene density]
+anno_color = ['#5FB6DE','#0000FF','#3774B9','#000000','#00FF00','#F5F57A','#368F5C']
+anno_type = [rectangle,barplot,barplot,lineplot,lineplot,lineplot,heatmap]
+anno_position = [top,top,bottom,top,bottom,bottom,middle]
+anno_height = [5,5,5,5,5,5,5]
+min_max_value = [normal,auto,normal,0.4:0.5,normal,normal,normal]
+anno_window = [none,none,100000,none,100000,100000,100000]
+opacity = [50%,100%,100%,100%,100%,100%,100%]
+file_type = [bed,bed,gff3,bed,gff3,gff3,gff3]
+filter_type = [none,none,none,none,none,none,gene]
+anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
 ```
 
 
-## 3. GenomeSyn2 --conf local.conf
+## 3. Local gene structure view:
+```
+## GenomeSyn2 --conf local.conf
+
+# less local.conf
+[genome_info]
+gonomes_filetype = bed
+gonomes_list = chr_length.info.tsv
+
+[synteny_info]
+line_type = curve
+synteny_list = synteny.info.tsv
+
+[show_region:no]
+# region = (genome_Name:ChrID:start-end)
+region = MH63:Chr10:24,850,000-24,885,000
+gene_list = gene.info.tsv
+```
 
 
+## 4. Multi-parental origins contribution view:
 
-## 4. GenomeSyn2 --vcf input.vcf
-
-Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
+## a) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
 
 ```
    GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
 ```
 
-## 5. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed
-
-Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
+## b) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
@@ -207,6 +267,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., 2022. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. J. Genet. Genomics 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
