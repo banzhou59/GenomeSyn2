@@ -7,7 +7,6 @@
 
 <table>
   <tr>
-    <!-- 左边表格 -->
     <td valign="top">
       <table border="1" cellspacing="0" cellpadding="4">
         <tr>
@@ -28,8 +27,6 @@
         </tr>
       </table>
     </td>
-
-    <!-- 右边图片 -->
     <td valign="top" style="text-align: center; padding-left: 20px;">
       <img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="400"/>
     </td>
@@ -438,6 +435,7 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
 
