@@ -137,7 +137,7 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 # Configuration file format
 
 ```
-less total.conf
+# less total.conf
 
 [genome_info]
 # gonomes_filetype = (fasta/bed)
@@ -156,12 +156,12 @@ savefig1 = GenomeSyn2.figure1.pdf
 savefig2 = GenomeSyn2.figure2.pdf
 
 [centromere_info]
-centromere_list=centromere.info.tsv
+centromere_list = centromere.info.tsv
 
 [telomere_info]
-telomere_list=telomere.info.tsv
-telomere_color=#441680
-opacity=100%
+telomere_list = telomere.info.tsv
+telomere_color = #441680
+opacity = 100%
 
 [show_region]
 # region = (genome_Name:ChrID:start-end)
@@ -169,27 +169,90 @@ region = MH63:Chr10:24,850,000-24,885,000
 gene_list = gene.info.tsv
 
 [anno_info:no]
-anno_number=[1,2,3,4,5,6,7]
-anno_name=[PAV,SNP,TE,GC Content,Gypsy,Copia,Gene density]
-anno_color=['#5FB6DE','#0000FF','#3774B9','#000000','#00FF00','#F5F57A','#368F5C']
-anno_type=[rectangle,barplot,barplot,lineplot,lineplot,lineplot,heatmap]
-anno_position=[top,top,bottom,top,bottom,bottom,middle]
-anno_height=[5,5,5,5,5,5,5]
-min_max_value=[normal,auto,normal,0.4:0.5,normal,normal,normal]
-anno_window=[none,none,100000,none,100000,100000,100000]
-opacity=[50%,100%,100%,100%,100%,100%,100%]
-file_type=[bed,bed,gff3,bed,gff3,gff3,gff3]
-filter_type=[none,none,none,none,none,none,gene]
-anno_list=[PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
+anno_number = [1,2,3,4,5,6,7]
+anno_name = [PAV,SNP,TE,GC Content,Gypsy,Copia,Gene density]
+anno_color = ['#5FB6DE','#0000FF','#3774B9','#000000','#00FF00','#F5F57A','#368F5C']
+anno_type = [rectangle,barplot,barplot,lineplot,lineplot,lineplot,heatmap]
+anno_position = [top,top,bottom,top,bottom,bottom,middle]
+anno_height = [5,5,5,5,5,5,5]
+min_max_value = [normal,auto,normal,0.4:0.5,normal,normal,normal]
+anno_window = [none,none,100000,none,100000,100000,100000]
+opacity = [50%,100%,100%,100%,100%,100%,100%]
+file_type = [bed,bed,gff3,bed,gff3,gff3,gff3]
+filter_type = [none,none,none,none,none,none,gene]
+anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
+```
+
+
+```
+# less chr_length.info.tsv
+#number	file_path	genome_name	tags
+1	./fa_bed/1.MH63.genome.bed	MH63	height:5;opacity:0.8;color:'#39A5D6';
+2	./fa_bed/2.T.genome.bed	T	height:5;opacity:0.8;color:'#43A98C';
+3	./fa_bed/3.Y.genome.bed	Y	height:5;opacity:0.8;color:'#B8D891';
+4	./fa_bed/4.M.genome.bed	M	height:5;opacity:0.8;color:'#528ABA';
+5	./fa_bed/5.N.genome.bed	N	height:5;opacity:0.8;color:'#7ABCD8';
+6	./fa_bed/6.NJ.genome.bed	NJ	height:5;opacity:0.8;color:'#5A9143';
+7	./fa_bed/7.KO.genome.bed	KO	height:5;opacity:0.8;color:'#2E8B57';
+8	./fa_bed/8.K.genome.bed	K	height:5;opacity:0.8;color:'#66CDAA';
+9	./fa_bed/9.R.genome.bed	R	height:5;opacity:0.8;color:'#4682B4';
+10	./fa_bed/10.TB.genome.bed	TB	height:5;opacity:0.8;color:'#6CA6CD';
+11	./fa_bed/11.L.genome.bed	L	height:5;opacity:0.8;color:'#8FBC8F';
+```
+
+
+```
+# less synteny.info.tsv
+#number	Ref	Query	align_file
+1	1	2	./mummer/1.MH63_vs_T.delta.filter.tsv
+2	2	3	./mummer/2.T_vs_Y.delta.filter.tsv
+3	3	4	./mummer/3.Y_vs_M.delta.filter.tsv
+4	4	5	./mummer/4.M_vs_N.delta.filter.tsv
+5	5	6	./mummer/5.N_vs_NJ.delta.filter.tsv
+6	6	7	./mummer/6.NJ_vs_KO.delta.filter.tsv
+7	7	8	./mummer/7.KO_vs_K.delta.filter.tsv
+8	8	9	./mummer/8.K_vs_R.delta.filter.tsv
+9	9	10	./mummer/9.R_vs_TB.delta.filter.tsv
+10	10	11	./mummer/10.TB_vs_L.delta.filter.tsv
 ```
 
 
 
+```
+# less centromere.info.tsv
+#number	file_path
+1	./centromere/1.MH63.centromere.tsv
+2	./centromere/2.T.centromere.tsv
+3	./centromere/3.Y.centromere.tsv
+4	./centromere/4.M.centromere.tsv
+5	./centromere/5.N.centromere.tsv
+6	./centromere/6.NJ.centromere.tsv
+7	./centromere/7.KO.centromere.tsv
+8	./centromere/8.K.centromere.tsv
+9	./centromere/9.R.centromere.tsv
+10	./centromere/10.TB.centromere.tsv
+11	./centromere/11.L.centromere.tsv
+```
 
+```
+# less telomere.info.tsv
+#number	file_path
+1	./telomere/1.MH63.telomere.tsv
+2	./telomere/2.T.telomere.tsv
+3	./telomere/3.Y.telomere.tsv
+4	./telomere/4.M.telomere.tsv
+5	./telomere/5.N.telomere.tsv
+6	./telomere/6.NJ.telomere.tsv
+7	./telomere/7.KO.telomere.tsv
+8	./telomere/8.K.telomere.tsv
+9	./telomere/9.R.telomere.tsv
+10	./telomere/10.TB.telomere.tsv
+11	./telomere/11.L.telomere.tsv
+```
 
+```
 
-
-
+```
 
 
 
