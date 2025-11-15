@@ -37,6 +37,7 @@
       - [a. Calculate SNP density and SNP identity from a VCF file](#a-calculate-snp-density-and-snp-identity-from-a-vcf-file-to-visualize-multi-parental-origin-contributions)
       - [b. Plot multi-parental origins contribution](#b-based-on-snp-density-and-snp-identity-statistics-plot-the-multi-parental-origins-contribution)
   - [Outputs](#Outputs)
+  - [Configuration File Structure](#Configuration-File-Structure)
 - [Citation](#citation)
 
 ## Introduction
@@ -265,6 +266,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
