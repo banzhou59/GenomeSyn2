@@ -31,10 +31,10 @@
   - [Test](#Test-installation)
   - [Inputs](#Inputs)
     - [1. Quick start](#1-quick-start)
-    - [2. GenomeSyn2 --conf total.conf](#2-genomesyn2--conf-totalconf)
-    - [3. GenomeSyn2 --conf local.conf](#3-genomesyn2--conf-localconf)
-    - [4. GenomeSyn2 --vcf input.vcf](#4-genomesyn2--vcf-inputvcf)
-    - [5. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed](#5-genomesyn2--indentity-snpindbed--density-snpdenbed)
+    - [2. GenomeSyn2 --conf total.conf](#2-genomesyn2---conf-totalconf)
+    - [3. GenomeSyn2 --conf local.conf](#3-genomesyn2---conf-localconf)
+    - [4. GenomeSyn2 --vcf input.vcf](#4-genomesyn2---vcf-inputvcf)
+    - [5. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed](#5-genomesyn2---indentity-snpindbed---density-snpdenbed)
   - [Outputs](#Outputs)
 - [Citation](#citation)
 
@@ -207,6 +207,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., 2022. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. J. Genet. Genomics 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
