@@ -407,29 +407,30 @@ Chr01	200001 300000 42606	GC
 ##color=<Sample=HHZ,color="#39A5D6">
 ##color=<Sample=Kasalath,color="#43A98C">
 ##color=<Sample=N1-10-10A,color="#B8D891">
-#CHROM POS	ID	REF ALT	QUAL	   FILTER INFO	FORMAT	HHZ  Kasalath  N1-10-10A
-Chr01  5741	.	G	 T	   192.885	PASS	 *	   *        0/0  1/1     0/0
-Chr01	5766	.	T	 C	   199.58	PASS	 *	   *        0/0  1/1     0/0
-Chr01 55497 .  A   C    111.883 PASS	 *	   *        0/0  1/1     1/1
+#CHROM POS	 ID	REF ALT	QUAL    FILTER INFO FORMAT HHZ Kasalath N1-10-10A
+Chr01  5741  .  G   T   192.885	PASS   *    *      0/0 1/1      0/0
+Chr01  5766  .  T   C   199.58	PASS   *    *      0/0 1/1      0/0
+Chr01  55497 .  A   C   111.883 PASS   *    *      0/0 1/1      1/1
 ...
 ```
 
 
 ```
 # less ./vcf/NAM.SNP_identity.50Kb.bed
-#Chr	Start	 End     HHZ	Kasalath	N1-10-10A
-Chr01	1	    50000	19    0        19
-Chr01	50001	 100000	40    2        42
-Chr01	100001 150000	89    8        97
+#Chr  Start  End    HHZ Kasalath N1-10-10A
+Chr01  1      50000  19  0        19
+Chr01  50001  100000 40  2        42
+Chr01  100001 150000 89  8        97
 ...
 
 # less ./vcf/NAM.SNP_density.50Kb.bed
-#Chr	Start	 End	   HHZ  Kasalath	N1-10-10A
-Chr01	1	    50000	1	  236       1
-Chr01	50001	 100000	5	  425       2
-Chr01	100001 150000	13	  390       9
+#Chr  Start   End    HHZ  Kasalath N1-10-10A
+Chr01  1      50000  1    236      1
+Chr01  50001  100000 5    425      2
+Chr01  100001 150000 13   390      9
 ...
 ```
+
 
 
 
