@@ -152,7 +152,8 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
 
 ## 1. Quick start
-a) The following commands demonstrate how to run GenomeSyn2 using different genome alignment software.
+a) Genome alignment
+The following commands demonstrate how to run GenomeSyn2 using different genome alignment tools:
 
 ```
    GenomeSyn2 --align mummer --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GS2.mummer.log
@@ -160,7 +161,8 @@ a) The following commands demonstrate how to run GenomeSyn2 using different geno
    GenomeSyn2 --align minimap2 --genome ./genome_path/ --outdir ./minimap2/ --thread 30 > GS2.minimap2.log
 ```
 
-b) The following commands demonstrate how to run GenomeSyn2 for protein alignment using different alignment tools.
+b) Protein alignment
+The following commands demonstrate how to run GenomeSyn2 for protein alignment using different tools:
 
 ```
    GenomeSyn2 --align blastp --genome ./genome_path/ --gff ./gene_data/ --outdir ./blastp/ --thread 30 > GS2.blastp.log
@@ -168,6 +170,22 @@ b) The following commands demonstrate how to run GenomeSyn2 for protein alignmen
    GenomeSyn2 --align mmseqs --genome ./genome_path/ --gff ./gene_data/ --outdir ./mmseqs/ --thread 30 > GS2.mmseqs.log
 
    GenomeSyn2 --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GS2.diamond.log
+```
+
+Important note on input files:
+Before running these commands, make sure that the genome FASTA files and the corresponding gene annotation files are renamed and sorted in numerical order, starting with a number followed by a dot (e.g., 1., 2., 3., etc.). The numbering of the genome files must exactly match the numbering of their corresponding annotation files. GenomeSyn2 will perform pairwise alignments based on this numerical order, ensuring that each genome is correctly matched with its annotation file.
+Example directory structure:
+```
+genome_path/
+├── 1.MH63RS3.fasta
+├── 2.T.mark.fasta
+└── 3.Y.mark.fasta
+
+gene_data/
+├── 1.MH63.gene.gff3
+├── 2.T.gene.gff3
+└── 3.Y.gene.gff3
+
 ```
 
 ## 2. Drawing genome synteny diagrams and annotation information
@@ -276,6 +294,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
