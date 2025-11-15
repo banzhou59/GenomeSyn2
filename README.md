@@ -24,17 +24,58 @@
     </tr>
 </table>
 
+<div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
 
+## Contents
+- [Introduction](#Introduction)
+- [Installation](#Installation)
+- [Usage](#Usage)
+  - [Test](#Test)
+  - [Inputs](#Inputs) 
+  - [Outputs](#Outputs)
+  - [Proof curation](#Proof-annotation)
+- [All available options](#All-available-options)
+- [Update history](#Update-history)
+- [Citation](#Citation)
 
-
-
-
+## Introduction
 
 The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
 
-<div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
 
-## Dependencies
+## Installation
+
+GenomeSyn2 provides three options for installing the required dependencies:
+
+1. Install GenomeSyn2 directly from Bioconda:
+
+```
+conda create -n GenomeSyn2 -c bioconda genomesyn2
+
+conda install -c bioconda genomesyn2
+```
+
+2.conda installation environment.yml
+
+```
+wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.0.0.tar.gz
+
+tar -zxvf GenomeSyn2-1.0.0.tar.gz
+
+cd ./GenomeSyn2/
+
+conda env create -f environment.yml
+
+conda activate GenomeSyn2
+
+# To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
+
+export PATH=/your_path/GenomeSyn2/bin:$PATH
+```
+
+3. Install dependencies manually
+
+You may manually install all required software listed in the documentation. This option is suitable for users who prefer full control over their environment.
 
 ***GenomeSyn2 Environment Requirements***
 
@@ -71,46 +112,27 @@ All dependencies can be easily installed using a Conda environment defined in th
 
 **[mmseqs2](https://anaconda.org/bioconda/mmseqs2)** — for large-scale sequence clustering and homology search
 
-
-After installing the dependencies with Conda and activating the Conda environment, install GenomeSyn2 using **one** of the following options:
-
 ```
-conda env create -f environment.yml
+# Clone the github repository for GenomeSyn2.
 
-conda activate GenomeSyn2
-```
-
-## Installation
-
-### Installation options
-
-1. Use git to clone the project repository:
-GenomeSyn2 does not require compilation and can be run directly.
-To enable running GenomeSyn2.pl from any directory, it is recommended to add it to the environment variable $PATH.
-
-```
 git clone https://github.com/banzhou59/GenomeSyn2.git
 
 cd ./GenomeSyn2/bin/
 
 chmod +x *.pl *.sh
 
-# To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
+# or
 
-export PATH=/your_path/GenomeSyn2/bin:$PATH
-```
+wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.0.0.tar.gz
 
-2. Download the GenomeSyn2.tar.gz
-
-```
-wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2-1.0.0.tar.gz
-
-tar -zxvf GenomeSyn2.tar.gz
+tar -zxvf GenomeSyn2-1.0.0.tar.gz
 
 # To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
 
 export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
+
+
 
 ### Test Installation
 
@@ -164,6 +186,7 @@ GenomeSyn2 --conf total.conf
 # Configuration File Structure
 
 Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
+
 
 
 
