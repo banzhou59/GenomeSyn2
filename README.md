@@ -254,7 +254,7 @@ gonomes_list = chr_length.info.tsv
 line_type = curve
 synteny_list = synteny.info.tsv
 
-[show_region:no]
+[show_region]
 # region = (genome_Name:ChrID:start-end)
 region = MH63:Chr10:24,850,000-24,885,000
 gene_list = gene.info.tsv
@@ -293,6 +293,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
