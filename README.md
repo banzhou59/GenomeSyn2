@@ -185,7 +185,6 @@ gene_data/
 ├── 1.MH63.gene.gff3
 ├── 2.T.gene.gff3
 └── 3.Y.gene.gff3
-
 ```
 
 ## 2. Drawing genome synteny diagrams and annotation information
@@ -294,6 +293,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
