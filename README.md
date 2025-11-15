@@ -25,8 +25,8 @@
 </table>
 
 ## Contents
-- [Introduction](#Introduction)
-- [Installation](#Installation)
+- [Introduction](#introduction)
+- [Installation](#installation)
 - [Usage](#Usage)
   - [Test](#Test Installation)
   - [Inputs](#Inputs) 
@@ -134,7 +134,7 @@ export PATH=/your_path/GenomeSyn2/bin:$PATH
 
 ## Usage
 
-### Test Installation
+## Test Installation
 
 If installed successfully, you can check the version with:
 
@@ -186,6 +186,7 @@ GenomeSyn2 --conf total.conf
 # Configuration File Structure
 
 Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
+
 
 
 
