@@ -30,12 +30,12 @@
 - [Usage](#Usage)
   - [Test](#Test-installation)
   - [Inputs](#Inputs)
-    - 1. [Quick start](#1-quick-start)
-    - 2. [Drawing genome synteny diagrams and annotation information](#2-drawing-genome-synteny-diagrams-and-annotation-information)
-    - 3. [Local gene structure view](#3-local-gene-structure-view)
-    - 4. [Multi-parental origins contribution view](#5-multi-parental-origins-contribution-view)
-      - [Calculate SNP density and SNP identity from a VCF file](#a-calculate-snp-density-and-snp-identity-from-a-vcf-file-to-visualize-multi-parental-origin-contributions)
-      - [Plot multi-parental origins contribution](#b-based-on-snp-density-and-snp-identity-statistics-plot-the-multi-parental-origins-contribution)
+    - [1. Quick start](#1-quick-start)
+    - [2. GenomeSyn2 --conf total.conf](#2-drawing-genome-synteny-diagrams-and-annotation-information)
+    - [3. GenomeSyn2 --conf local.conf](#3-local-gene-structure-view)
+    - [Multi-parental origins contribution view](#5-multi-parental-origins-contribution-view)
+      - [4. GenomeSyn2 --vcf input.vcf](#a-calculate-snp-density-and-snp-identity-from-a-vcf-file-to-visualize-multi-parental-origin-contributions)
+      - [5. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed](#b-based-on-snp-density-and-snp-identity-statistics-plot-the-multi-parental-origins-contribution)
   - [Outputs](#Outputs)
 - [Citation](#citation)
 
@@ -267,6 +267,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., 2022. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. J. Genet. Genomics 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
