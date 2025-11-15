@@ -5,13 +5,10 @@
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
 
-<table>
+<table width="100%">
   <tr>
-    <td valign="top" style="text-align: center; padding-left: 20px;">
-      <img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="400"/>
-    </td>
     <td valign="top">
-      <table border="1" cellspacing="0" cellpadding="4">
+      <table border="1" cellspacing="0" cellpadding="4" width="100%">
         <tr>
           <th>Author</th>
           <th>E-mail</th>
@@ -32,6 +29,7 @@
     </td>
   </tr>
 </table>
+
 
 
 
@@ -437,6 +435,7 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
 
