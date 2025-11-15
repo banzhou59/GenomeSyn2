@@ -226,7 +226,15 @@ Chr01	200001 300000 42606	GC
 ...
 ```
 
+## VCF File Format for GenomeSyn2
 
+The VCF file used in GenomeSyn2 should follow the standard VCF format and include the following requirements:
+### 1. Chromosome lengths
+All chromosomes present in the VCF must have their lengths specified in the header using the ##contig=<ID=chr,length=xxxx> format. This information is mandatory for GenomeSyn2 to correctly calculate SNP density and identity across the genome.
+### 2. Sample colors (optional)
+Colors for each sample can be specified in the header using the ##color=<Sample=SampleName,color="#RRGGBB"> format. If a color is not provided, GenomeSyn2 will assign a default color automatically.
+### 3. SNP genotype data
+The VCF header line must include all sample names (varieties) after the FORMAT column. The body contains SNP genotype data in standard VCF format.
 ```
 # less ./vcf/parents.progeny.snps.genotype.Chr01.vcf
 ##contig=<ID=Chr01,length=45027022>
