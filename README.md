@@ -5,33 +5,28 @@
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
 
-<table>
-  <tr>
-    <td valign="top">
-      <table border="1" cellspacing="0" cellpadding="4">
-        <tr>
-          <th>Author</th>
-          <th>E-mail</th>
-        </tr>
-        <tr>
-          <td><a href="https://github.com/banzhou59">Zu-Wen Zhou</a></td>
-          <td><code>784012725@qq.com</code></td>
-        </tr>
-        <tr>
-          <td><a href="https://lst.gxu.edu.cn/info/1077/2334.htm">Ling-Ling Chen</a></td>
-          <td><code>jmsong@swu.edu.cn</code></td>
-        </tr>
-        <tr>
-          <td><a href="http://agronomy.swu.edu.cn/info/1081/5164.htm">Jia-Ming Song</a></td>
-          <td><code>llchen@gxu.edu.cn</code></td>
-        </tr>
-      </table>
-    </td>
-    <td valign="top" style="text-align: center; padding-left: 20px;">
-      <img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="400"/>
-    </td>
-  </tr>
-</table>
+<div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+  <table border="1" cellspacing="0" cellpadding="4" style="height: 400px;">
+    <tr>
+      <th>Author</th>
+      <th>E-mail</th>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/banzhou59">Zu-Wen Zhou</a></td>
+      <td><code>784012725@qq.com</code></td>
+    </tr>
+    <tr>
+      <td><a href="https://lst.gxu.edu.cn/info/1077/2334.htm">Ling-Ling Chen</a></td>
+      <td><code>jmsong@swu.edu.cn</code></td>
+    </tr>
+    <tr>
+      <td><a href="http://agronomy.swu.edu.cn/info/1081/5164.htm">Jia-Ming Song</a></td>
+      <td><code>llchen@gxu.edu.cn</code></td>
+    </tr>
+  </table>
+  <img src="images/Figure1.png" alt="GenomeSyn2 Figure1" style="height: 400px; object-fit: contain;"/>
+</div>
+
 
 
 
@@ -435,6 +430,7 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
 
