@@ -258,6 +258,16 @@ gene_list = gene.info.tsv
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
+## Outputs
+- 📁 **outdir_name** - Specifies the output directory or folder name.
+    - 📁 **fa_bed** - Directory containing processed genome files that record chromosome length information.
+    - 📁 **align_name** - Directory containing the results of alignments (genome or protein) generated using the --align option.
+- 📄 **chr_length.info.tsv** - File recording each genome’s chromosome lengths, variety names, and plotting colors.
+- 📄 **genomes.info.tsv** - File recording the paths to genome files, variety names, and plotting colors.
+- 📄 **synteny.info.tsv** - File recording the paths to the Minimap2 alignment results between the corresponding genomes.
+- 📄 **total.conf** - The configuration file used for the current GenomeSyn2 run, containing plotting parameters, annotation settings, and selected regions for display.
+- 📕 **GenomeSyn2.figure1.pdf** - Single-chromosome synteny block view.
+- 📕 **GenomeSyn2.figure2.pdf** - Multi-chromosome synteny block view.
 
 ## Configuration File Structure
 
@@ -266,31 +276,4 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
