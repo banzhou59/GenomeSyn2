@@ -24,13 +24,11 @@
     </tr>
 </table>
 
-<div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
-
 ## Contents
 - [Introduction](#Introduction)
 - [Installation](#Installation)
 - [Usage](#Usage)
-  - [Test](#Test)
+  - [Test](#Test Installation)
   - [Inputs](#Inputs) 
   - [Outputs](#Outputs)
   - [Proof curation](#Proof-annotation)
@@ -42,6 +40,7 @@
 
 The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
 
+<div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
 
 ## Installation
 
@@ -133,6 +132,7 @@ export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
 
 
+## Usage
 
 ### Test Installation
 
@@ -186,6 +186,7 @@ GenomeSyn2 --conf total.conf
 # Configuration File Structure
 
 Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
+
 
 
 
