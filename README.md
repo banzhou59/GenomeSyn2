@@ -1,7 +1,5 @@
 # [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2-v1.0.0.tar.gz)
 
-
-![Release v1.0.0](https://img.shields.io/badge/release-v1.0.0-blue)
 [![GitHub release](https://img.shields.io/github/v/release/banzhou59/GenomeSyn2?display_name=tag&sort=semver)](https://github.com/banzhou59/GenomeSyn2/releases)
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
@@ -432,6 +430,7 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
 
