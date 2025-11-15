@@ -283,10 +283,10 @@ Chr12_T	24630051	Chr12
 
 ```
 # less ./mummer/1.MH63_vs_T.delta.filter.tsv
-#Rchr	Rstart	Rend	Qchr	Qstart	Qend	Strand	Rname	Qname
-Chr01	1	2652	Chr09_T	6740	9400	+	NA	NA
-Chr01	2	5679	Chr06_T	445620	451387	+	NA	NA
-Chr01	6318	32536	Chr01_T	13058	39282	+	NA	NA
+#Rchr	Rstart	Rend	Qchr	   Qstart  Qend	Strand	Rname Qname
+Chr01	1        2652	Chr09_T	6740    9400	+        NA    NA
+Chr01	2        5679	Chr06_T	445620  451387	+        NA    NA
+Chr01	6318     32536	Chr01_T	13058   39282	+        NA    NA
 ...
 
 #less ./blastp/1.MH63RS3vsT.blastp.tsv
@@ -302,26 +302,26 @@ Chr01	63224	65656	Chr01_T	70028	72460	+	OsMH_01T0000900.1	OsMH_01T0000900.1
 #chr  start   end	score	type
 Chr01 1 . . telomere
 Chr02 1	.	.	telomere
-Chr03	1	.	.	telomere
-Chr04	1	.	.	telomere
-Chr05	1	.	.	telomere
+Chr03 1	.	.	telomere
+Chr04 1	.	.	telomere
+Chr05 1	.	.	telomere
 Chr06 1	.	.	telomere
-Chr07	1	.	.	telomere
-Chr08	1	.	.	telomere
-Chr09	1	.	.	telomere
-Chr10	1	.	.	telomere
-Chr11	1	.	.	telomere
-Chr12	1	.	.	telomere
-Chr01	45019925	.	.	telomere
+Chr07 1	.	.	telomere
+Chr08 1	.	.	telomere
+Chr09 1	.	.	telomere
+Chr10 1	.	.	telomere
+Chr11 1	.	.	telomere
+Chr12 1	.	.	telomere
+Chr01 45019925	.	.	telomere
 Chr02 37296383	.	.	telomere
-Chr03	39890647	.	.	telomere
-Chr04	37311809	.	.	telomere
-Chr05	31307288	.	.	telomere
+Chr03 39890647	.	.	telomere
+Chr04 37311809	.	.	telomere
+Chr05 31307288	.	.	telomere
 Chr06 31913106	.	.	telomere
-Chr07	30870650	.	.	telomere
-Chr09	24892156	.	.	telomere
-Chr10	25687121	.	.	telomere
-Chr12	26941614	.	.	telomere
+Chr07 30870650	.	.	telomere
+Chr09 24892156	.	.	telomere
+Chr10 25687121	.	.	telomere
+Chr12 26941614	.	.	telomere
 ```
 
 ```
@@ -409,3 +409,4 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
