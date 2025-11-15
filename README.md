@@ -25,18 +25,19 @@
 </table>
 
 ## Contents
-## Contents
-- <a href="#introduction" style="text-decoration:none;">Introduction</a>
-- <a href="#installation" style="text-decoration:none;">Installation</a>
-- <a href="#usage" style="text-decoration:none;">Usage</a>
-  - <a href="#test-installation" style="text-decoration:none;">Test</a>
-  - <a href="#inputs" style="text-decoration:none;">Inputs</a>
-  - <a href="#outputs" style="text-decoration:none;">Outputs</a>
-  - <a href="#proof-annotation" style="text-decoration:none;">Proof curation</a>
-- <a href="#all-available-options" style="text-decoration:none;">All available options</a>
-- <a href="#update-history" style="text-decoration:none;">Update history</a>
-- <a href="#citation" style="text-decoration:none;">Citation</a>
-
+- [Introduction](#Introduction)
+- [Installation](#Installation)
+- [Usage](#Usage)
+  - [Test](#Test-installation)
+  - [Inputs](#Inputs)
+    - [1. Quick start](#Quick start)
+    - [2. GenomeSyn2 --conf total.conf](#GenomeSyn2 --conf total.conf)
+    - [3. GenomeSyn2 --conf anno.conf](#GenomeSyn2 --conf anno.conf)
+    - [4. GenomeSyn2 --conf local.conf](#GenomeSyn2 --conf local.conf)
+    - [5. GenomeSyn2 --vcf input.vcf](#GenomeSyn2 --vcf input.vcf)
+    - [6. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed](#GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed)
+  - [Outputs](#Outputs)
+- [Citation](#citation)
 
 ## Introduction
 
@@ -148,7 +149,7 @@ GenomeSyn2 --help
 wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 ```
 
-# Quick start
+## 1. Quick start
 1) The following commands demonstrate how to run GenomeSyn2 using different genome alignment software.
 
 ```
@@ -166,14 +167,29 @@ wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
 
    GenomeSyn2 --align diamond --genome ./genome_path/ --gff ./gene_data/ --outdir ./diamond/ --thread 30 > GS2.diamond.log
 ```
+## 2. GenomeSyn2 --conf total.conf
 
-3) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
+```
+# GenomeSyn2 --conf total.conf
+
+```
+
+
+## 3. GenomeSyn2 --conf local.conf
+
+
+
+## 4. GenomeSyn2 --vcf input.vcf
+
+Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
 
 ```
    GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
 ```
 
-4) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
+## 5. GenomeSyn2 --indentity SNP.ind.bed --density SNP.den.bed
+
+Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
 ```
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
@@ -185,13 +201,13 @@ You can run GenomeSyn2 with a custom configuration file:
 GenomeSyn2 --conf total.conf
 ```
 
-# Configuration File Structure
+## Configuration File Structure
 
 Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
 
+## Citation
 
-
-
+Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., 2022. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. J. Genet. Genomics 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
 
 
 
