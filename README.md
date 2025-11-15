@@ -225,7 +225,7 @@ anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Co
 
 ## 3. Local gene structure view:
 ```
-## GenomeSyn2 --conf local.conf
+GenomeSyn2 --conf local.conf
 
 # less local.conf
 ------------------------------------------
@@ -250,13 +250,13 @@ gene_list = gene.info.tsv
 ## a) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
 
 ```
-   GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
+GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
 ```
 
 ## b) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
 ```
-   GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
+GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
 ## Outputs
 - 📁 **outdir_name** - Specifies the output directory or folder name.
@@ -276,6 +276,7 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
