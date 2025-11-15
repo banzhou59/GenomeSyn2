@@ -13,7 +13,7 @@
 
 The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
 
-<img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="600"/>
+<div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="400"/></div>
 
 ## Dependencies
 
@@ -411,6 +411,7 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
 
