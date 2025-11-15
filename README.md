@@ -13,6 +13,8 @@ The tool integrates multi-genome synteny relationships with diverse statistical 
 | [Ling-Ling Chen](https://lst.gxu.edu.cn/info/1077/2334.htm) | `jmsong@swu.edu.cn`    |
 | [Jia-Ming Song](http://agronomy.swu.edu.cn/info/1081/5164.htm) | `llchen@gxu.edu.cn` |
 
+<img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="400"/>
+
 ## Dependencies
 
 ***GenomeSyn2 Environment Requirements***
@@ -409,5 +411,6 @@ Chr01	50001	 100000	5	  425       2
 Chr01	100001 150000	13	  390       9
 ...
 ```
+
 
 
