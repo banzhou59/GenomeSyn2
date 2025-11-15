@@ -1,7 +1,6 @@
 # [GenomeSyn-II: A Comparative Genomics Framework Integrating Synteny Visualization](https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2-v1.0.0.tar.gz)
 
 [![GitHub release](https://img.shields.io/github/v/release/banzhou59/GenomeSyn2?display_name=tag&sort=semver)](https://github.com/banzhou59/GenomeSyn2/releases)
-[![GitHub release](https://img.shields.io/github/v/release/banzhou59/GenomeSyn2?label=release)](https://github.com/banzhou59/GenomeSyn2/releases)
 [![License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](https://bioconda.github.io/recipes/genomesyn2/README.html)
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
@@ -183,6 +182,7 @@ file_type=[bed,bed,gff3,bed,gff3,gff3,gff3]
 filter_type=[none,none,none,none,none,none,gene]
 anno_list=[PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
 ```
+
 
 
 
