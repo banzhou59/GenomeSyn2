@@ -57,7 +57,7 @@ conda create -n GenomeSyn2 -c bioconda genomesyn2
 conda install -c bioconda genomesyn2
 ```
 
-2.conda installation environment.yml
+2. conda installation environment.yml
 
 ```
 wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.0.0.tar.gz
@@ -77,7 +77,7 @@ export PATH=/your_path/GenomeSyn2/bin:$PATH
 
 3. Install dependencies manually
 
-You may manually install all required software listed in the documentation. This option is suitable for users who prefer full control over their environment.
+You may manually install all required software listed in the documentation.
 
 ***GenomeSyn2 Environment Requirements***
 
@@ -134,7 +134,6 @@ tar -zxvf GenomeSyn2-1.0.0.tar.gz
 export PATH=/your_path/GenomeSyn2/bin:$PATH
 ```
 
-
 ## Usage
 
 ## Test Installation
@@ -143,6 +142,8 @@ If installed successfully, you can check the version with:
 
 ```
 GenomeSyn2 --help
+
+GenomeSyn2 --version
 
 # Download the test data of GenomeSyn2
 
@@ -170,10 +171,10 @@ b) The following commands demonstrate how to run GenomeSyn2 for protein alignmen
 
 ## 2. Drawing genome synteny diagrams and annotation information
 ```
-## GenomeSyn2 --conf total.conf
-
+GenomeSyn2 --conf total.conf
 
 # less total.conf
+------------------------------------------------------------------------------------------------------------
 [genome_info]
 # gonomes_filetype = (fasta/bed)
 # Type of genome description (fasta or bed)
@@ -217,6 +218,7 @@ opacity = [50%,100%,100%,100%,100%,100%,100%]
 file_type = [bed,bed,gff3,bed,gff3,gff3,gff3]
 filter_type = [none,none,none,none,none,none,gene]
 anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
+------------------------------------------------------------------------------------------------------------
 ```
 
 
@@ -225,6 +227,7 @@ anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Co
 ## GenomeSyn2 --conf local.conf
 
 # less local.conf
+------------------------------------------
 [genome_info]
 gonomes_filetype = bed
 gonomes_list = chr_length.info.tsv
@@ -237,6 +240,7 @@ synteny_list = synteny.info.tsv
 # region = (genome_Name:ChrID:start-end)
 region = MH63:Chr10:24,850,000-24,885,000
 gene_list = gene.info.tsv
+------------------------------------------
 ```
 
 
@@ -254,19 +258,14 @@ gene_list = gene.info.tsv
    GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
 ```
 
-
-You can run GenomeSyn2 with a custom configuration file:
-```
-GenomeSyn2 --conf total.conf
-```
-
 ## Configuration File Structure
 
 Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
 
 ## Citation
 
-Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., 2022. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. J. Genet. Genomics 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., 2022. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. *J. Genet. Genomics* 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
