@@ -25,16 +25,18 @@
 </table>
 
 ## Contents
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#Usage)
-  - [Test](#Test Installation)
-  - [Inputs](#Inputs) 
-  - [Outputs](#Outputs)
-  - [Proof curation](#Proof-annotation)
-- [All available options](#All-available-options)
-- [Update history](#Update-history)
-- [Citation](#Citation)
+## Contents
+- <a href="#introduction" style="text-decoration:none;">Introduction</a>
+- <a href="#installation" style="text-decoration:none;">Installation</a>
+- <a href="#usage" style="text-decoration:none;">Usage</a>
+  - <a href="#test-installation" style="text-decoration:none;">Test</a>
+  - <a href="#inputs" style="text-decoration:none;">Inputs</a>
+  - <a href="#outputs" style="text-decoration:none;">Outputs</a>
+  - <a href="#proof-annotation" style="text-decoration:none;">Proof curation</a>
+- <a href="#all-available-options" style="text-decoration:none;">All available options</a>
+- <a href="#update-history" style="text-decoration:none;">Update history</a>
+- <a href="#citation" style="text-decoration:none;">Citation</a>
+
 
 ## Introduction
 
@@ -186,6 +188,7 @@ GenomeSyn2 --conf total.conf
 # Configuration File Structure
 
 Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
+
 
 
 
