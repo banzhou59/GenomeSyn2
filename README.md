@@ -262,7 +262,7 @@ gene_list = gene.info.tsv
 - 📁 **outdir_name** - Specifies the output directory or folder name.
     - 📁 **fa_bed** - Directory containing processed genome files that record chromosome length information.
     - 📁 **align_name** - Directory containing the results of alignments (genome or protein) generated using the --align option.
-- 📄 **chr_length.info.tsv** - File recording each genome’s chromosome lengths, variety names, and plotting colors.
+- 📄 **chr_length.info.tsv** - File recording the paths of chromosome length files for each genome, along with their corresponding variety names and assigned plotting colors. Each file contains the chromosome lengths of the respective genome.
 - 📄 **genomes.info.tsv** - File recording the paths to genome files, variety names, and plotting colors.
 - 📄 **synteny.info.tsv** - File recording the paths to the Minimap2 alignment results between the corresponding genomes.
 - 📄 **total.conf** - The configuration file used for the current GenomeSyn2 run, containing plotting parameters, annotation settings, and selected regions for display.
@@ -276,4 +276,5 @@ Please refer to [Configuration_File.README.md](Configuration_File.README.md) for
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
