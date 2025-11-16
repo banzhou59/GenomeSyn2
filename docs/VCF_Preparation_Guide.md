@@ -75,5 +75,56 @@ gunzip Output2.snps.pass.vcf.gz
 ```
 
 
+## VCF File Format for GenomeSyn2
+
+The VCF file used in GenomeSyn2 should follow the standard VCF format and include the following requirements:
+### 1. Chromosome lengths
+All chromosomes present in the VCF must have their lengths specified in the header using the ##contig=<ID=chr,length=xxxx> format. This information is mandatory for GenomeSyn2 to correctly calculate SNP density and identity across the genome.
+### 2. Sample colors (optional)
+Colors for each sample can be specified in the header using the ##color=<Sample=SampleName,color="#RRGGBB"> format. If a color is not provided, GenomeSyn2 will assign a default color automatically.
+### 3. SNP genotype data
+The VCF header line must include all sample names (varieties) after the FORMAT column. The body contains SNP genotype data in standard VCF format.
+```
+# less ./vcf/parents.progeny.snps.genotype.Chr01.vcf
+##contig=<ID=Chr01,length=45027022>
+##contig=<ID=Chr02,length=37301368>
+##contig=<ID=Chr03,length=39893253>
+##contig=<ID=Chr04,length=37319239>
+##contig=<ID=Chr05,length=31307418>
+##contig=<ID=Chr06,length=31921180>
+##contig=<ID=Chr07,length=30877072>
+##contig=<ID=Chr08,length=30492302>
+##contig=<ID=Chr09,length=24892599>
+##contig=<ID=Chr10,length=25690566>
+##contig=<ID=Chr11,length=34100580>
+##contig=<ID=Chr12,length=26942889>
+##color=<Sample=HHZ,color="#39A5D6">
+##color=<Sample=Kasalath,color="#43A98C">
+##color=<Sample=N1-10-10A,color="#B8D891">
+#CHROM POS	 ID	REF ALT	QUAL    FILTER INFO FORMAT HHZ Kasalath N1-10-10A
+Chr01  5741  .  G   T   192.885	PASS   *    *      0/0 1/1      0/0
+Chr01  5766  .  T   C   199.58	PASS   *    *      0/0 1/1      0/0
+Chr01  55497 .  A   C   111.883 PASS   *    *      0/0 1/1      1/1
+...
+```
+
+
+```
+# less ./vcf/NAM.SNP_identity.50Kb.bed
+#Chr  Start  End    HHZ Kasalath N1-10-10A
+Chr01  1      50000  19  0        19
+Chr01  50001  100000 40  2        42
+Chr01  100001 150000 89  8        97
+...
+
+# less ./vcf/NAM.SNP_density.50Kb.bed
+#Chr  Start   End    HHZ  Kasalath N1-10-10A
+Chr01  1      50000  1    236      1
+Chr01  50001  100000 5    425      2
+Chr01  100001 150000 13   390      9
+...
+```
+
+
 
 
