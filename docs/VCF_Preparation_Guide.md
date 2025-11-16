@@ -45,15 +45,17 @@ Select the progeny genome as the reference, and use Minimap2 to align both the p
 ```
 minimap2 -t 30 -ax asm5 Progeny.fasta Parent1.fasta | samtools sort -o Progeny_vs_Parent1.sort.bam
 
-minimap2 -t 30 -ax asm5 Progeny.fasta Parent2.fasta | samtools sort -o Progeny_vs_Parent2.sort.bam
+samtools index Progeny_vs_Progeny.sort.bam
 
-minimap2 -t 30 -ax asm5 Progeny.fasta Progeny.fasta | samtools sort -o Progeny_vs_Progeny.sort.bam
+minimap2 -t 30 -ax asm5 Progeny.fasta Parent2.fasta | samtools sort -o Progeny_vs_Parent2.sort.bam
 
 samtools index Progeny_vs_Parent1.sort.bam
 
-samtools index Progeny_vs_Parent2.sort.bam
+# When using the progeny genome as the reference, it is important to align the progeny genome against itself. This self-alignment is necessary for subsequent SNP calling to accurately identify the number of SNPs with full identity.
 
-samtools index Progeny_vs_Progeny.sort.bam
+minimap2 -t 30 -ax asm5 Progeny.fasta Progeny.fasta | samtools sort -o Progeny_vs_Progeny.sort.bam
+
+samtools index Progeny_vs_Parent2.sort.bam
 
 bcftools mpileup -Ou -f Reference.fasta -a FORMAT/AD,FORMAT/DP --threads 30  Progeny_vs_Parent1.sort.bam Progeny_vs_Parent2.sort.bam Progeny_vs_Progeny.sort.bam | bcftools call -mv --ploidy 1 -Oz --threads 30 -o Output2.raw.vcf.gz
 
@@ -71,5 +73,6 @@ bcftools index Output2.snps.pass.vcf.gz
 
 gunzip Output2.snps.pass.vcf.gz
 ```
+
 
 
