@@ -274,7 +274,7 @@ savefig1 = GenomeSyn2.figure1.pdf
 GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
 ```
 
-The VCF file can be generated from either resequencing data or whole-genome assemblies. For detailed instructions on how to identify SNPs and produce the required VCF file, please refer to the [VCF_Preparation_Guide.md](VCF_Preparation_Guide.md) document.
+The VCF file can be generated from either resequencing data or whole-genome assemblies. For detailed instructions on how to identify SNPs and produce the required VCF file, please refer to the [VCF_Preparation_Guide.md](docs/VCF_Preparation_Guide.md) document.
 
 ## b) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
 
@@ -309,11 +309,12 @@ GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin
 
 ## Configuration File Structure
 
-Please refer to [Configuration_File.README.md](Configuration_File.README.md) for details on the configuration file format.
+Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md) for details on the configuration file format.
 
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
