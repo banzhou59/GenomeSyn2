@@ -1,6 +1,6 @@
 ## For detailed instructions on how to identify SNPs and produce the required VCF file.
 
-## Using NGS(Next-Generation Sequencing) data
+#### Using NGS(Next-Generation Sequencing) data
 To generate the VCF file, first select a reference genome. Then, use BWA to align the resequencing reads of both parents and progeny to the reference genome. After alignment, use BCFtools to perform SNP calling on the mapped data.
 ```
 bwa index Reference.fasta
@@ -34,7 +34,7 @@ bcftools index Output1.snps.pass.vcf.gz
 gunzip Output1.snps.pass.vcf.gz
 ```
 
-## Using Genome data
+#### Using Genome data
 Select the progeny genome as the reference, and use Minimap2 to align both the parental and progeny genomes to the reference. Structural variants are then jointly called across multiple samples using BCFtools, followed by filtering based on depth, quality, and SNP sites.
 ```
 minimap2 -t 30 -ax asm5 Progeny.fasta Parent1.fasta | samtools sort -o Progeny_vs_Parent1.sort.bam
@@ -65,3 +65,4 @@ bcftools index Output2.snps.pass.vcf.gz
 
 gunzip Output2.snps.pass.vcf.gz
 ```
+
