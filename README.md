@@ -283,7 +283,7 @@ GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_de
 ```
 
 ## Outputs
-🔹1. Outputs of Genome/Protein Alignment Mode (--align):
+🔹1. Outputs of Genome/Protein Alignment Mode (--align <mummer|minimap2|blastp|mmseqs|diamond>):
 ```
 GenomeSyn2 --align <mummer|minimap2> --genome ./genome_path/ --outdir ./mummer/ --thread 30 > GS2.align.log
 GenomeSyn2 --align <blastp|mmseqs|diamond> --genome ./genome_path/ --gene ./gene_data/ --outdir ./mummer/ --thread 30 > GS2.align.log
@@ -299,7 +299,7 @@ GenomeSyn2 --align <blastp|mmseqs|diamond> --genome ./genome_path/ --gene ./gene
 - 📕 **GenomeSyn2.figure2.pdf** - Multi-chromosome synteny block view.
 
 
-🔹2. Outputs of SNP Identity and Density Mode (--type identity):
+🔹2. Outputs of SNP Identity and Density Mode (--type <identity|density|unite>):
 ```
 GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin <bin_size> > GS2.vcf.log
 ```
@@ -314,6 +314,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
