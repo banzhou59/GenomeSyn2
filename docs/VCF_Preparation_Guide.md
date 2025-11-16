@@ -40,7 +40,7 @@ gunzip Output1.snps.pass.vcf.gz
 
 #### Using Genome data
 
-Select the progeny genome as the reference, and use Minimap2 to align both the parental and progeny genomes to the reference. Structural variants are then jointly called across multiple samples using BCFtools, followed by filtering based on depth, quality, and SNP sites.
+Select the progeny genome as the reference, and use Minimap2 to align both the parental and progeny genomes to the reference. Structural variants are then jointly called across multiple samples using BCFtools, followed by filtering based on depth, quality, and SNP sites. When using the progeny genome as the reference, it is important to align the progeny genome against itself. This self-alignment is necessary for subsequent SNP calling to accurately identify the number of SNPs with full identity.
 
 ```
 minimap2 -t 30 -ax asm5 Progeny.fasta Parent1.fasta | samtools sort -o Progeny_vs_Parent1.sort.bam
@@ -51,7 +51,7 @@ minimap2 -t 30 -ax asm5 Progeny.fasta Parent2.fasta | samtools sort -o Progeny_v
 
 samtools index Progeny_vs_Parent1.sort.bam
 
-# When using the progeny genome as the reference, it is important to align the progeny genome against itself. This self-alignment is necessary for subsequent SNP calling to accurately identify the number of SNPs with full identity.
+# Self-alignment of the progeny genome
 
 minimap2 -t 30 -ax asm5 Progeny.fasta Progeny.fasta | samtools sort -o Progeny_vs_Progeny.sort.bam
 
@@ -73,6 +73,7 @@ bcftools index Output2.snps.pass.vcf.gz
 
 gunzip Output2.snps.pass.vcf.gz
 ```
+
 
 
 
