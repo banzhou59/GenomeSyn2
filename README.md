@@ -52,6 +52,8 @@ GenomeSyn2 provides three options for installing the required dependencies:
 
 1.Install GenomeSyn2 directly from Bioconda:
 
+ *(The Bioconda package is currently under manual review and may not be available yet.)*
+
 ```
 conda create -n GenomeSyn2 -c bioconda genomesyn2
 
@@ -318,6 +320,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
