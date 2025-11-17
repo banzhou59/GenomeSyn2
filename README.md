@@ -139,13 +139,15 @@ export PATH=/your_path/GenomeSyn2/bin:$PATH
 
 ## Test Installation
 
-If installed successfully, you can check the version with:
+You can use the following commands to check whether GenomeSyn2 was installed successfully:
 
 ```
 GenomeSyn2 --help
 
 GenomeSyn2 --version
-
+```
+You may then download the example dataset to perform a test run:
+```
 # Download the test data of GenomeSyn2
 
 wget https://cbi.gxu.edu.cn/zwzhou/GenomeSyn/GenomeSyn2_example_data.zip
@@ -314,6 +316,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
