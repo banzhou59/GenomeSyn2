@@ -16,11 +16,11 @@
     </tr>
     <tr>
       <td><a href="https://lst.gxu.edu.cn/info/1077/2334.htm">Ling-Ling Chen</a></td>
-      <td><code>jmsong@swu.edu.cn</code></td>
+      <td><code>llchen@gxu.edu.cn</code></td>
     </tr>
     <tr>
       <td><a href="http://agronomy.swu.edu.cn/info/1081/5164.htm">Jia-Ming Song</a></td>
-      <td><code>llchen@gxu.edu.cn</code></td>
+      <td><code>jmsong@swu.edu.cn</code></td>
     </tr>
 </table>
 
@@ -320,6 +320,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
