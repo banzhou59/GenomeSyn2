@@ -123,7 +123,7 @@ anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Co
 ```
 
 ```
-# less ./fa_bed/1.MH63.genome.bed
+# less ./fa_bed/2.T.genome.bed
 #chr_id  chr_len    chr_display_id
 Chr01_T  44771367	Chr01
 Chr02_T  37771395	Chr02
