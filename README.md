@@ -42,8 +42,7 @@
 
 ## Introduction
 
-The tool integrates multi-genome synteny relationships with diverse statistical and annotation features, enabling systematic exploration of genome rearrangement patterns, tracing of genomic region origins, and quantitative comparison of parental contributions, thus providing an efficient and intuitive visualization platform for comparative genomics and population genetics research.
-
+GenomeSyn-II is an integrated and efficient visualization platform designed for large-scale comparative genomics, pangenome analysis, and ancestry deconvolution. It supports genome-, chromosome-, and gene-scale visualization, enabling researchers to intuitively explore synteny, structural variation, genome annotation layers, and ancestry contributions within a single unified framework.
 <div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
 
 ## Installation
@@ -272,9 +271,9 @@ savefig1 = GenomeSyn2.figure1.pdf
 ```
 
 
-## 4. Multi-parental origins contribution view:
+## 4. Ancestry Deconvolution view:
 
-## a) Calculate SNP density and SNP identity from a VCF file to visualize multi-parental origin contributions:
+## a) To compute SNP density and SNP concordance from VCF files for visualization in the ancestry deconvolution view:
 
 ```
 GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin 50000 > GS2.vcf.log
@@ -282,7 +281,7 @@ GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin
 
 The VCF file can be generated from either resequencing data or whole-genome assemblies. For detailed instructions on how to identify SNPs and produce the required VCF file, please refer to the [VCF_Preparation_Guide.md](docs/VCF_Preparation_Guide.md) document.
 
-## b) Based on SNP density and SNP identity statistics, plot the multi-parental origins contribution:
+## b) Based on SNP density and SNP identity statistics, plot the Ancestry Deconvolution view:
 
 ```
 GenomeSyn2 --type identity --identity ./SNP_identity.50Kb.bed --density ./SNP_density.50Kb.bed > GS2.vcf.log
@@ -311,7 +310,7 @@ GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin
 ```
 - 📄 **SNP_identity.<bin_size>.bed** - This BED file reports the number of SNPs with identical genotypes shared among all samples within each genomic bin. The genomic bin size is defined by the --bin parameter.
 - 📄 **SNP_density.<bin_size>.bed** - This BED file summarizes the SNP counts per sample within each genomic bin. The bin size is specified by the --bin parameter.
-- 📕 **GenomeSyn.<bin_size>.pdf** - Multi-parental origins contribution view.
+- 📕 **GenomeSyn.<bin_size>.pdf** - Ancestry Deconvolution view.
 
 ## Configuration File Structure
 
@@ -320,6 +319,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
