@@ -11,6 +11,7 @@ use Data::Dumper;
 use FindBin qw($Bin);
 use File::Basename;
 use SVG;
+#use Data::Dumper;
 
 my $dotplot;
 # 设置默认处理可选参数[anno_info:no],[optional_parameter:no],[color_setup:no],[centromere_info:no],[telomere_info:no]
@@ -41,8 +42,9 @@ my %hash_read_chr_order;
 my %hash_match_best;
 my %hash_match_best_num;
 my %hash_inversion;
+my %inversion_plus;
+my %inversion_minus;
 my %aligned_order;
-my %chr_orient;
 my @arr_ref_chrname;
 my $syntent_type = 'curve';#curve, line
 my $scale = 0;
@@ -222,7 +224,7 @@ foreach my $opt (keys %option_usage) {
 my @ARGV_copy = @ARGV;  # 复制原始ARGV内容，供后续判断
 GetOptions(
     'h|help'    => \$help,
-    'v|version' => sub { print "$0: version 2.0\n"; exit },
+    'v|version' => sub { print "$0: version 2.0\n"; exit(0) },
     'm|man'     => \$man,
     'conf=s'  => \$conf_info,
     'anno=s'    => \$anno_info2,
@@ -264,7 +266,7 @@ file_type=[bed,bed,gff3,bed,gff3,gff3,gff3]
 filter_type=[none,none,none,none,none,none,gene]
 anno_list=[PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Copia.info.tsv,gene.info.tsv]
 END_ANNO
-    exit;
+    exit(0);
 }
 
 # -c,--conf help => 输出默认配置
@@ -298,7 +300,7 @@ opacity=100%
 region = R:Chr10_R:23,362,471-23,380,557
 gene_list = gene.info.tsv
 END_CONF
-    exit;
+    exit(0);
 }
 
 # 检查只允许的参数，否则输出帮助并退出
@@ -314,7 +316,7 @@ my %valid_opts = (
 #if ( $help ||(!@ARGV) || ($ARGV[0] // '') eq '?') {
 if ($help || scalar(@ARGV_copy) == 0) {
     print_usage();
-    exit(1);
+    exit(0);
 }
 # 检查3种允许的参数组合，且参数值存在且合理
 my $valid = 0;
@@ -515,7 +517,7 @@ elsif($valid == '2') {
 			while (my $seq = $seqio->next_seq) {
 				my $id   = $seq->id;      # 染色体ID（>后面的第一个单词）
 				my $len  = $seq->length;  # 序列长度
-				my $merge_chrinfo = "$id\t$len\t$id";
+				my $merge_chrinfo = "$id\t$len\t$id\t+";
 				$hash_chr_sort{$id} = $merge_chrinfo;
 				#print $out_fh3 "$merge_chrinfo\n";
 			}
@@ -676,7 +678,7 @@ elsif($valid == '2') {
 				while (my $seq = $seqio->next_seq) {
 					my $id   = $seq->id;      # 染色体ID（>后面的第一个单词）
 					my $len  = $seq->length;  # 序列长度
-					my $merge_chrinfo = "$id\t$len\t$id";
+					my $merge_chrinfo = "$id\t$len\t$id\t+";
 					$hash_chr_sort{$id} = $merge_chrinfo;
 					#print $out_fh3 "$id\t$len\t$id\n";
 				}
@@ -825,11 +827,16 @@ elsif($valid == '2') {
 elsif($valid == '3') {
 	# 读取配置文件,并设置成参数大小写不敏感
 	my %config = read_config_file($conf_info);
-	# 检查必需的参数是否存在[genome_info],[synteny_info],[save_info]
+	# 检查必需的参数是否存在[genome_info],[synteny_info],[save_info],并读取染色体长度文件和共线性文件
 	process_required_params(\%config);
-	# 处理配置信息
-	# process_config(\%config);
-    # 打印配置信息（调试用）
+	# 排序染色体顺序获取最佳染色体对应关系和正负链对应关系
+	if (exists $config{'genome_info'}->{'sort'}) {
+		my $synteny_file = $config{'synteny_info'}->{'synteny_list'};
+        print "Using the $synteny_file file, the sorting of chromosome IDs and their corresponding strand orientations begins.\n";
+		my $sort_off = lc($config{'genome_info'}->{'sort'});
+		if($sort_off eq 'yes'){find_best_synteny_matches(\%hash_Ginfo,\%hash_syninfo);}
+	}
+    # 打印配置信息（调用绘图）
     print_config_summary(\%config);
 }
 elsif($valid == '4') {
@@ -1102,7 +1109,7 @@ END_HELP
 
 
 # 退出程序
-exit;
+exit(0);
 
 #####################################################
 # 子程序设定
@@ -1300,28 +1307,28 @@ sub process_required_params {
 					 next if /^#/;  # 跳过以 # 开头的注释行
 					 next if /^\s*$/;  # 可选：跳过空行
 					 my @tem = split /\t/;
-					 my ($Chrname, $Chrlength, $ChrnameGAI);
+					 my ($Chrname, $Chrlength, $ChrnameGAI, $Chr_strand);
 					 $chr_numX++;
 					# 判断列数
-					if (@tem == 2) {
-						($Chrname, $Chrlength) = @tem;
+					if (@tem == 3) {
+						($Chrname, $Chrlength, $ChrnameGAI, $Chr_strand) = @tem;
 						$hash_Ginfo{$Gnum}->{'chr'}->{$Chrname} = $Chrlength;
-						$hash_chrGAI{$Gnum}->{$Chrname} = $Chrname;
-					}
-					elsif(@tem == 3) {
-						($Chrname, $Chrlength, $ChrnameGAI) = @tem;
-						$hash_Ginfo{$Gnum}->{'chr'}->{$Chrname} = $Chrlength;
-						#$hash_Ginfo{$Gnum}->{'chrGAI'}->{$ChrnameGAI} = $Chrlength;
 						$hash_chrGAI{$Gnum}->{$Chrname} = $ChrnameGAI;
+						$hash_Ginfo{$Gnum}->{'strand'}->{$Chrname} = '+';
+					}
+					elsif (@tem == 4) {
+						($Chrname, $Chrlength, $ChrnameGAI, $Chr_strand) = @tem;
+						$hash_Ginfo{$Gnum}->{'chr'}->{$Chrname} = $Chrlength;
+						$hash_chrGAI{$Gnum}->{$Chrname} = $ChrnameGAI;
+						$hash_Ginfo{$Gnum}->{'strand'}->{$Chrname} = $Chr_strand;
 					}
 					else
 					{
-						$Chrname = $tem[0];
-						$Chrlength = $tem[1];
-						$hash_Ginfo{$Gnum}->{'chr'}->{$Chrname} = $Chrlength;
-						$hash_chrGAI{$Gnum}->{$Chrname} = $Chrname;
+						die "Error: Incorrect format in $Gbed. Expected 4 columns but found "
+								. scalar(@tem)
+								. " columns.\nLine: $_\n";
 					}
-					$hash_read_chr_order{$Gnum}->{$Chrname} = $chr_numX;
+					$hash_read_chr_order{$Gnum}->{$chr_numX} = $Chrname;
 					if($Gnum == 1){push(@arr_ref_chrname, $Chrname);}
 				 }
 				 close $FLbed;
@@ -1407,7 +1414,7 @@ sub print_config_summary {
 		#print"\n\$Chrtop: $Chrtop\n";
 		#print"\$Chrdottom: $Chrdottom\n";
     }
-	find_best_synteny_matches(\%hash_Ginfo,\%hash_syninfo);
+	#find_best_synteny_matches(\%hash_Ginfo,\%hash_syninfo);
 	#基因绘制
 	if(exists $config_ref->{'show_region'})
 	{
@@ -1423,19 +1430,21 @@ sub print_config_summary {
 		 my $global_min = undef;
 		 my $Gname_max_num = 0;
 		 my $chrname_max_num = 0;
-		 my $chr_num_min = undef;
+		 my $chr_num_max = 0;
 		 my $genome_num = 0;
 		 if (exists $config_ref->{'synteny_info'}->{'line_type'}) {$syntent_type = $config_ref->{'synteny_info'}->{'line_type'};}
+		 #print Dumper(\%hash_Ginfo);
+		 #exit(1);
 		foreach my $Gnum (sort{$a<=>$b} keys %hash_Ginfo)
 		{
 			my $Gname = $hash_Ginfo{$Gnum}->{'name'};
-			my $hashG = $hash_Ginfo{$Gnum}->{'chr'};
-			my $chr_num = 0;
+			#my $hashG = $hash_Ginfo{$Gnum}->{'chr'};
+			my $hashG = $hash_read_chr_order{$Gnum};
 			$genome_num++;
 			##### print"$Gnum:$Gname\n";
-			foreach my $chr_name (sort keys %{$hashG})
+			foreach my $numX(sort{$a<=>$b} keys %{$hashG})
 			{
-				 $chr_num++;
+				 my $chr_name = $hash_read_chr_order{$Gnum}->{$numX};
 				 my $chr_len = $hash_Ginfo{$Gnum}->{'chr'}->{$chr_name};
 				 ##### print "$chr_name\t$chr_len\n";
 				 # 更新最大值
@@ -1450,10 +1459,9 @@ sub print_config_summary {
 				# 更新染色体名称最大字符串的字符数目
 				my $Chrlen = length($hash_chrGAI{$Gnum}->{$chr_name});
 				$chrname_max_num = $Chrlen if $Chrlen > $chrname_max_num;
-				
-			}
-			 if (!defined($chr_num_min) || $chr_num < $chr_num_min) {
-				$chr_num_min = $chr_num;
+				 if (!defined($chr_num_max) || $numX > $chr_num_max) {
+					$chr_num_max = $numX;
+				}
 			}
 		}
 		$Gname_max_len = estimate_svg_text_width($Gname_max_num);
@@ -1464,11 +1472,11 @@ sub print_config_summary {
 		my $outfigure2 = '';
 		if(exists $config_ref->{'save_info'}->{'savefig1'})
 		{
-			$outfigure1 = drawing_SVG1($config_ref,$global_max,$global_min,$Gname_max_num,$chrname_max_num,$chr_num_min,$genome_num);
+			$outfigure1 = drawing_SVG1($config_ref,$global_max,$global_min,$Gname_max_num,$chrname_max_num,$chr_num_max,$genome_num);
 		}
 		if(exists $config_ref->{'save_info'}->{'savefig2'})
 		{
-			$outfigure2 = drawing_SVG2($config_ref,$global_max,$global_min,$Gname_max_num,$chrname_max_num,$chr_num_min,$genome_num);
+			$outfigure2 = drawing_SVG2($config_ref,$global_max,$global_min,$Gname_max_num,$chrname_max_num,$chr_num_max,$genome_num);
 		}
 		# 打印保存信息
 		print "\nOutput Files:\n";
@@ -1553,11 +1561,6 @@ sub drawing_region {
 			my $lenR_max_end;
 			my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
 			my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
-			my @arr_chrR = @{$aligned_order{$ref_genome}};
-			my @arr_chrQ = @{$aligned_order{$query_genome}};
-			# 建立 chr => index 的映射，方便快速查找下标
-			my %posR = map { $arr_chrR[$_] => $_ } 0 .. $#arr_chrR;
-			my %posQ = map { $arr_chrQ[$_] => $_ } 0 .. $#arr_chrQ;
 			my $Syn_align = $hash_syninfo_ref->{$Syn_num}->{'align'};
 			my $j = 0;
 			my $chr_min = 1e12;   # 初始化一个很大的数
@@ -1571,62 +1574,72 @@ sub drawing_region {
 				my @tem = split /\t/;
 				my $chrR = $tem[0];
 				my $chrQ = $tem[3];
-				if($chrR eq $ChrX)
+				my $chr_lenR = $hash_Ginfo_ref->{$ref_genome}->{'chr'}->{$chrR};
+				my $chr_lenQ = $hash_Ginfo_ref->{$query_genome}->{'chr'}->{$chrQ};
+				my $strandR = $hash_Ginfo_ref->{$ref_genome}->{'strand'}->{$chrR};
+				my $strandQ = $hash_Ginfo_ref->{$query_genome}->{'strand'}->{$chrQ};
+				my $Rnum = 0;
+				my $Qnum = 0;
+				my $chr_off_R = 0;
+				my $chr_off_Q = 0;
+				foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$ref_genome} })
+				{
+					my $chrX = $hash_read_chr_order{$ref_genome}{$numX};
+					if($chrR eq $chrX){$chr_off_R = 1;$Rnum = $numX;}
+				}
+				foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$query_genome} })
+				{
+					my $chrX = $hash_read_chr_order{$query_genome}{$numX};
+					if($chrQ eq $chrX){$chr_off_Q = 1;$Qnum = $numX;}
+				}
+				if(($chrR eq $ChrX)and($Rnum == $Qnum))
 				{
 					my ($startR, $endR, $startQ, $endQ);
-					# 先检查 chr 是否存在于各自数组中
-					next unless exists $posR{$chrR};
-					next unless exists $posQ{$chrQ};
-					# 索引位置必须相同
-					if ($posR{$chrR} == $posQ{$chrQ}) {
-						$j++;
-						if($j == 1){$chrQsave = $chrQ;}
-						my $strandR = $chr_orient{$ref_genome}->{$chrR};
-						my $strandQ = $chr_orient{$query_genome}->{$chrQ};
-						$startR = $tem[1];
-						$endR   = $tem[2];
-						$startQ = $tem[4];
-						$endQ   = $tem[5];
-						my $strand = $tem[6];
-						#my ($GnumX, $GnameX, $ChrX, $StartX, $EndX);
-						#if ($StartX <= $endR and $startR <= $EndX)
-						# case1: $startR 在 [$StartX, $EndX] 里面
-						# case2: $endR   在 [$StartX, $EndX] 里面
-						# case3: [$StartX, $EndX] 完全落在 [$startR, $endR] 里面
-						if((($StartX <= $startR)and($startR <= $EndX)) or (($StartX <= $endR)and($endR <= $EndX)) or (($startR <= $StartX)and($EndX <= $endR)))
-						{
-							# 更新 chr_min 和 chr_max
-							my $minQ = ($startQ < $endQ) ? $startQ : $endQ;
-							my $maxQ = ($startQ > $endQ) ? $startQ : $endQ;
-							my $minR = ($startR < $endR) ? $startR : $endR;
-							my $maxR = ($startR > $endR) ? $startR : $endR;
-							my $chr_min0 = $chr_min;
-							my $chr_max0 = $chr_max;
-							my $chr_minR0 = $chr_minR;
-							my $chr_maxR0 = $chr_maxR;
-							#my ($chr_minR0, $chr_maxR0);
-							$chr_min0 = $minQ if $minQ < $chr_min0;
-							$chr_max0 = $maxQ if $maxQ > $chr_max0;
-							$chr_minR0 = $minR if $minR < $chr_minR0;
-							$chr_maxR0 = $maxR if $maxR > $chr_maxR0;
-							#my $input_len = abs($EndX0 - $StartX0) + 1;             # 输入长度 1 Mb
-							my $ref_len0 = abs($chr_maxR0 - $chr_minR0) + 1;
-							my $query_len0 = abs($chr_max0 - $chr_min0) + 1;
-							my $ref_len = abs($chr_maxR - $chr_minR) + 1;
-							my $query_len = abs($chr_max - $chr_min) + 1;
-							# 如果比对区间太大（比如超过输入的 2 倍），就跳过
-							#next if $query_len0 > 2 * $ref_len0;
-							$chr_min = $minQ if $minQ < $chr_min;
-							$chr_max = $maxQ if $maxQ > $chr_max;
-							$chr_minR = $minR if $minR < $chr_minR;
-							$chr_maxR = $maxR if $maxR > $chr_maxR;
-							my $keyR = "$ref_genome" . ':' . "$chrR" . ':' . "$startR" . ':' . "$endR";
-							my $keyQ = "$query_genome" . ':' . "$chrQ" . ':' . "$startQ" . ':' . "$endQ";
-							$hash_SYN{$Syn_num}->{$keyR}->{$keyQ} = $strand;
-							$hash_SYN_R{$Syn_num}->{$ref_genome}->{$chrR}->{$startR}->{$endR}=0;
-							#print"TEST1:$Syn_num\t$keyR\t$keyQ\t$strand\n";
-							#print"test222:$Syn_num\n";
-						}
+					$j++;
+					if($j == 1){$chrQsave = $chrQ;}
+					$startR = $tem[1];
+					$endR   = $tem[2];
+					$startQ = $tem[4];
+					$endQ   = $tem[5];
+					my $strand = $tem[6];
+					#my ($GnumX, $GnameX, $ChrX, $StartX, $EndX);
+					#if ($StartX <= $endR and $startR <= $EndX)
+					# case1: $startR 在 [$StartX, $EndX] 里面
+					# case2: $endR   在 [$StartX, $EndX] 里面
+					# case3: [$StartX, $EndX] 完全落在 [$startR, $endR] 里面
+					if((($StartX <= $startR)and($startR <= $EndX)) or (($StartX <= $endR)and($endR <= $EndX)) or (($startR <= $StartX)and($EndX <= $endR)))
+					{
+						# 更新 chr_min 和 chr_max
+						my $minQ = ($startQ < $endQ) ? $startQ : $endQ;
+						my $maxQ = ($startQ > $endQ) ? $startQ : $endQ;
+						my $minR = ($startR < $endR) ? $startR : $endR;
+						my $maxR = ($startR > $endR) ? $startR : $endR;
+						my $chr_min0 = $chr_min;
+						my $chr_max0 = $chr_max;
+						my $chr_minR0 = $chr_minR;
+						my $chr_maxR0 = $chr_maxR;
+						#my ($chr_minR0, $chr_maxR0);
+						$chr_min0 = $minQ if $minQ < $chr_min0;
+						$chr_max0 = $maxQ if $maxQ > $chr_max0;
+						$chr_minR0 = $minR if $minR < $chr_minR0;
+						$chr_maxR0 = $maxR if $maxR > $chr_maxR0;
+						#my $input_len = abs($EndX0 - $StartX0) + 1;             # 输入长度 1 Mb
+						my $ref_len0 = abs($chr_maxR0 - $chr_minR0) + 1;
+						my $query_len0 = abs($chr_max0 - $chr_min0) + 1;
+						my $ref_len = abs($chr_maxR - $chr_minR) + 1;
+						my $query_len = abs($chr_max - $chr_min) + 1;
+						# 如果比对区间太大（比如超过输入的 2 倍），就跳过
+						#next if $query_len0 > 2 * $ref_len0;
+						$chr_min = $minQ if $minQ < $chr_min;
+						$chr_max = $maxQ if $maxQ > $chr_max;
+						$chr_minR = $minR if $minR < $chr_minR;
+						$chr_maxR = $maxR if $maxR > $chr_maxR;
+						my $keyR = "$ref_genome" . ':' . "$chrR" . ':' . "$startR" . ':' . "$endR";
+						my $keyQ = "$query_genome" . ':' . "$chrQ" . ':' . "$startQ" . ':' . "$endQ";
+						$hash_SYN{$Syn_num}->{$keyR}->{$keyQ} = $strand;
+						$hash_SYN_R{$Syn_num}->{$ref_genome}->{$chrR}->{$startR}->{$endR}=0;
+						#print"TEST1:$Syn_num\t$keyR\t$keyQ\t$strand\n";
+						#print"test222:$Syn_num\n";
 					}
 				}
 			}
@@ -1771,13 +1784,6 @@ sub drawing_region {
 			my $outX2 = commify($region_Rmax);
 			my $outX3 = commify($region_Qmin);
 			my $outX4 = commify($region_Qmax);
-			#print "$ref_genome:$GnameR: $chrRsave: [$outX1 - $outX2]\n";
-			#print "$query_genome:$GnameQ: $chrQsave: [$outX3 - $outX4]\n\n";
-			#if($genome_num==1)
-			#$hash_region{$ref_genome_key} = "$GnameR" . '_:_' . "$chrRsave" . '_:_' . "$region_Rmin" . '_:_' . "$region_Rmax";
-			#$hash_region{$query_genome_key} = "$GnameQ" . '_:_' . "$chrQsave" . '_:_' . "$region_Qmin" . '_:_' . "$region_Qmax";
-			#print"TEST5:$hash_region{$ref_genome}\n";
-			#print"TEST5:$hash_region{$query_genome_key}\n";
 			$hash_chr_region{$ref_genome}->{$Syn_num} = "$GnameR" . '_:_' . "$chrRsave" . '_:_' . "$region_Rmin" . '_:_' . "$region_Rmax";
 			$hash_chr_region{$query_genome}->{$Syn_num} = "$GnameQ" . '_:_' . "$chrQsave" . '_:_' . "$region_Qmin" . '_:_' . "$region_Qmax";
 			# —— 链式更新（切换到下一基因组时让 ChrX/StartX/EndX 对应 Query 侧的区间）——
@@ -1833,11 +1839,6 @@ sub drawing_region {
 					my $lenR_max_end;
 					my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
 					my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
-					my @arr_chrR = @{$aligned_order{$ref_genome}};
-					my @arr_chrQ = @{$aligned_order{$query_genome}};
-					# 建立 chr => index 的映射，方便快速查找下标
-					my %posR = map { $arr_chrR[$_] => $_ } 0 .. $#arr_chrR;
-					my %posQ = map { $arr_chrQ[$_] => $_ } 0 .. $#arr_chrQ;
 					my $Syn_align = $hash_syninfo_ref->{$Syn_num}->{'align'};
 					my $j = 0;
 					my $chr_min = 1e12;   # 初始化一个很大的数
@@ -1853,18 +1854,26 @@ sub drawing_region {
 						#print"XX:$tem[0]\t$tem[1]\t$tem[2]\t$tem[3]\t$tem[4]\t$tem[5]\t$tem[6]\t$tem[7]\t$tem[8]\n";
 						my $chrR = $tem[0];
 						my $chrQ = $tem[3];
+						my $Rnum = 0;
+						my $Qnum = 0;
+						my $chr_off_R = 0;
+						my $chr_off_Q = 0;
+						foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$ref_genome} })
+						{
+							my $chrX = $hash_read_chr_order{$ref_genome}{$numX};
+							if($chrR eq $chrX){$chr_off_R = 1;$Rnum = $numX;}
+						}
+						foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$query_genome} })
+						{
+							my $chrX = $hash_read_chr_order{$query_genome}{$numX};
+							if($chrQ eq $chrX){$chr_off_Q = 1;$Qnum = $numX;}
+						}
 						if($chrR eq $ChrX)
 						{
 							my ($startR, $endR, $startQ, $endQ);
-							# 先检查 chr 是否存在于各自数组中
-							next unless exists $posR{$chrR};
-							next unless exists $posQ{$chrQ};
-							# 索引位置必须相同
-							if ($posR{$chrR} == $posQ{$chrQ}) {
+							if (($chr_off_R==1)and($chr_off_Q==1)and($Rnum == $Qnum)) {
 								$j++;
 								if($j == 1){$chrQsave = $chrQ;}
-								my $strandR = $chr_orient{$ref_genome}->{$chrR};
-								my $strandQ = $chr_orient{$query_genome}->{$chrQ};
 								$startR = $tem[1];
 								$endR   = $tem[2];
 								$startQ = $tem[4];
@@ -2095,11 +2104,6 @@ sub drawing_region {
 					my $lenR_max_end;
 					my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
 					my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
-					my @arr_chrR = @{$aligned_order{$ref_genome}};
-					my @arr_chrQ = @{$aligned_order{$query_genome}};
-					# 建立 chr => index 的映射，方便快速查找下标
-					my %posR = map { $arr_chrR[$_] => $_ } 0 .. $#arr_chrR;
-					my %posQ = map { $arr_chrQ[$_] => $_ } 0 .. $#arr_chrQ;
 					my $Syn_align = $hash_syninfo_ref->{$Syn_num}->{'align'};
 					my $j = 0;
 					my $chr_min = 1e12;   # 初始化一个很大的数
@@ -2113,18 +2117,26 @@ sub drawing_region {
 						my @tem = split /\t/;
 						my $chrR = $tem[3];
 						my $chrQ = $tem[0];
+						my $Rnum = 0;
+						my $Qnum = 0;
+						my $chr_off_R = 0;
+						my $chr_off_Q = 0;
+						foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$ref_genome} })
+						{
+							my $chrX = $hash_read_chr_order{$ref_genome}{$numX};
+							if($chrR eq $chrX){$chr_off_R = 1;$Rnum = $numX;}
+						}
+						foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$query_genome} })
+						{
+							my $chrX = $hash_read_chr_order{$query_genome}{$numX};
+							if($chrQ eq $chrX){$chr_off_Q = 1;$Qnum = $numX;}
+						}
 						if($chrR eq $ChrX)
 						{
 							my ($startR, $endR, $startQ, $endQ);
-							# 先检查 chr 是否存在于各自数组中
-							next unless exists $posR{$chrR};
-							next unless exists $posQ{$chrQ};
-							# 索引位置必须相同
-							if ($posR{$chrR} == $posQ{$chrQ}) {
+							if (($chr_off_R==1)and($chr_off_Q==1)and($Rnum == $Qnum)) {
 								$j++;
 								if($j == 1){$chrQsave = $chrR;}
-								my $strandR = $chr_orient{$ref_genome}->{$chrR};
-								my $strandQ = $chr_orient{$query_genome}->{$chrQ};
 								$startR = $tem[4];
 								$endR   = $tem[5];
 								$startQ = $tem[1];
@@ -2430,7 +2442,8 @@ sub drawing_region {
 		my $SVG1_canvas_w = sprintf("%.0f", $SVG_main + $SVG_x + $SVG_x_right + 15 );
 		my $SVG1_canvas_h = sprintf("%.0f", ($Chrtop + $Chrdottom) * ($genome_num + 1) + $synteny_height * ($genome_num + 1) + $SVG_x_top + $GHM);
 		$SVG1= SVG -> new(width => $SVG1_canvas_w . 'mm', height   => $SVG1_canvas_h . 'mm', viewBox => "0 0 $SVG1_canvas_w $SVG1_canvas_h");
-
+		#print Dumper \%result_SYN;
+		#print Dumper \%hash_region;
 		#绘制共线性块
 		draw_syn_region($SVG1,\%result_SYN,\%hash_Ginfo,\%hash_region,$syntent_type,$genome_num, $hash_gene_height_ref);
 		#绘制染色体块及刻度线
@@ -2498,6 +2511,15 @@ sub drawing_region {
 sub read_gene_structure {
      my ($gene_list, $hash_Ginfo_ref, $hash_region_ref, $genome_num_ref) = @_;
 	 my %gene_info;
+	 my %genefile_path;
+	 open my $FL_gene_anno, "<", $gene_list or die "Cannot open $gene_list: $!";
+	 while(<$FL_gene_anno>) {
+		 chomp;
+		 next if /^#/ || /^\s*$/;
+		 my ($gnum, $file_anno) = split /\t/;
+		 $genefile_path{$gnum} = $file_anno;
+	 }
+	 close $FL_gene_anno;
 	 foreach my $Gnum (sort{$a<=>$b} keys %{$hash_Ginfo_ref})
 	 {
 		my $hash_regionX = $hash_region_ref->{$Gnum};
@@ -2505,107 +2527,97 @@ sub read_gene_structure {
 		my ($GnameX, $ChrX, $StartX, $EndX) = split(/_:_/,$hash_regionX);
 		my $chr_len = abs($EndX - $StartX) + 1;
 		my $chr_width = $chr_len / $scale;
-		open my $FL_gene_anno, "<", $gene_list or die "Cannot open $gene_list: $!";
-		while(<$FL_gene_anno>) {
+		my $file_anno = $genefile_path{$Gnum};
+		my (%genes, %mRNAs, %children);
+		my $j = 0;
+		open my $FL_gene_annoX, "<", $file_anno or die "Cannot open $file_anno: $!";
+		while(<$FL_gene_annoX>) {
 			chomp;
 			next if /^#/ || /^\s*$/;
-			my ($gnum, $file_anno) = split /\t/;
-			# -----------------------
-			# 读取注释文件（single $file_anno），两阶段处理：先收集，再聚合
-			# -----------------------
-			my (%genes, %mRNAs, %children);
-			my $j = 0;
-			open my $FL_gene_annoX, "<", $file_anno or die "Cannot open $file_anno: $!";
-			while(<$FL_gene_annoX>) {
-				chomp;
-				next if /^#/ || /^\s*$/;
-				my ($chr, $identity, $type, $start, $end, $score, $strand, $phase, $attr) = split /\t/;
-				$type = lc($type);
-				next unless defined $chr && $chr eq $ChrX;  # 只处理同染色体的行
+			my ($chr, $identity, $type, $start, $end, $score, $strand, $phase, $attr) = split /\t/;
+			$type = lc($type);
+			next unless defined $chr && $chr eq $ChrX;  # 只处理同染色体的行
 
-				# 解析 attr 为 hash，支持 ID=..;Parent=..; 等
-				my %attr;
-				while ($attr =~ /([^=;]+)=([^;]+)/g) {
-					$attr{$1} = $2;
-				}
+			# 解析 attr 为 hash，支持 ID=..;Parent=..; 等
+			my %attr;
+			while ($attr =~ /([^=;]+)=([^;]+)/g) {
+				$attr{$1} = $2;
+			}
 
-				if ($type eq 'gene') {
-					my $id = $attr{ID} // next;
-					$genes{$id} = {
-						start => $start+0,
-						end   => $end+0,
-						strand=> $strand,
-						chr   => $chr,
-						info  => "$chr:$start:$end:$strand",
-					};
-				}
-				#elsif ($type =~ /^(mRNA|transcript)$/) {
-				elsif ($type =~ /^(mrna|transcript)$/) {
-					#$j = 0;
-					my $id = $attr{ID} // next;
-					my $parent = $attr{Parent} // '';
-					$mRNAs{$id} = {
+			if ($type eq 'gene') {
+				my $id = $attr{ID} // next;
+				$genes{$id} = {
+					start => $start+0,
+					end   => $end+0,
+					strand=> $strand,
+					chr   => $chr,
+					info  => "$chr:$start:$end:$strand",
+				};
+			}
+			#elsif ($type =~ /^(mRNA|transcript)$/) {
+			elsif ($type =~ /^(mrna|transcript)$/) {
+				#$j = 0;
+				my $id = $attr{ID} // next;
+				my $parent = $attr{Parent} // '';
+				$mRNAs{$id} = {
+					type   => $type,
+					parent => $parent,
+					start  => $start+0,
+					end    => $end+0,
+					strand => $strand,
+					chr    => $chr,
+					info   => "$chr:$start:$end:$strand",
+				};
+			}
+			#elsif ($type =~ /^(CDS|five_prime_UTR|three_prime_UTR)$/) {
+			elsif ($type =~ /^(cds|five_prime_utr|three_prime_utr)$/) {
+				$j ++;
+				my $parent = $attr{Parent} // next;
+				my $id_make = "$parent" . '-' . "$type" . '-' . "$j";
+				my $id = $id_make;
+				# Parent 可能是逗号分隔的多个 ID
+				#for my $pm (split /,/, $parent) {
+					#push @{$children{$pm}}, {
+					$children{$parent}{$id} = {
 						type   => $type,
-						parent => $parent,
+						chr    => $chr,
 						start  => $start+0,
 						end    => $end+0,
 						strand => $strand,
-						chr    => $chr,
-						info   => "$chr:$start:$end:$strand",
+						info   => "$type:$chr:$start:$end:$strand",
 					};
-				}
-				#elsif ($type =~ /^(CDS|five_prime_UTR|three_prime_UTR)$/) {
-				elsif ($type =~ /^(cds|five_prime_utr|three_prime_utr)$/) {
-					$j ++;
-					my $parent = $attr{Parent} // next;
-					my $id_make = "$parent" . '-' . "$type" . '-' . "$j";
-					my $id = $id_make;
-					# Parent 可能是逗号分隔的多个 ID
-					#for my $pm (split /,/, $parent) {
-						#push @{$children{$pm}}, {
-						$children{$parent}{$id} = {
-							type   => $type,
-							chr    => $chr,
-							start  => $start+0,
-							end    => $end+0,
-							strand => $strand,
-							info   => "$type:$chr:$start:$end:$strand",
-						};
-					#}
-				}
+				#}
 			}
-			close $FL_gene_annoX;
+		}
+		close $FL_gene_annoX;
+		# -----------------------
+		# 聚合：先以 gene 为主，附加 mRNA -> children
+		# -----------------------
+		# 1) genes 与区域有重叠则保留
+		foreach my $gid (sort keys %genes) {
+			my $g = $genes{$gid};
+			if ($g->{end} >= $StartX && $g->{start} <= $EndX) {   # 重叠判断
+				# 可选：把 gene 的 info 裁剪到区间内（绘图时常用）
+				my $g_s = $g->{start} < $StartX ? $StartX : $g->{start};
+				my $g_e = $g->{end}   > $EndX   ? $EndX   : $g->{end};
+				$gene_info{$Gnum}{$gid}{info} = "$ChrX:$g_s:$g_e:$g->{strand}";
+				$gene_info{$Gnum}{$gid}{orig_info} = $g->{info}; # 保留原始坐标以备查
+				#print"gene:$Gname:$gid\t$gene_info{$Gnum}{$gid}{orig_info}\n";
 
-			# -----------------------
-			# 聚合：先以 gene 为主，附加 mRNA -> children
-			# -----------------------
-			# 1) genes 与区域有重叠则保留
-			foreach my $gid (sort keys %genes) {
-				my $g = $genes{$gid};
-				if ($g->{end} >= $StartX && $g->{start} <= $EndX) {   # 重叠判断
-					# 可选：把 gene 的 info 裁剪到区间内（绘图时常用）
-					my $g_s = $g->{start} < $StartX ? $StartX : $g->{start};
-					my $g_e = $g->{end}   > $EndX   ? $EndX   : $g->{end};
-					$gene_info{$Gnum}{$gid}{info} = "$ChrX:$g_s:$g_e:$g->{strand}";
-					$gene_info{$Gnum}{$gid}{orig_info} = $g->{info}; # 保留原始坐标以备查
-					#print"gene:$Gname:$gid\t$gene_info{$Gnum}{$gid}{orig_info}\n";
-
-					# 附上属于该 gene 的所有 mRNA（parent 字段可能包含多个 parent id）
-					foreach my $mrna_id (grep { defined $mRNAs{$_} && $mRNAs{$_}{parent} =~ /\b\Q$gid\E\b/ } keys %mRNAs) {
-						my $mr = $mRNAs{$mrna_id};
-						$gene_info{$Gnum}{$gid}{mRNAs}{$mrna_id}{info} = $mr->{info};
-						#print"$Gname:$mRNAs{$mrna_id}{type}:$mrna_id\t$mRNAs{$mrna_id}{info}\n";
-						foreach my $children_id (sort keys %{$children{$mrna_id}})
-						{
-							#push @{$gene_info{$Gnum}{$gid}{mRNAs}{$mrna_id}{children}}, $$children{$mrna_id};
-							$gene_info{$Gnum}{$gid}{mRNAs}{$mrna_id}{children}{$children_id} = $children{$mrna_id}{$children_id};
-							#print"$Gname:$children{$mrna_id}{$children_id}{type}:$children_id\t$children{$mrna_id}{$children_id}{info}\n";
-						}
+				# 附上属于该 gene 的所有 mRNA（parent 字段可能包含多个 parent id）
+				foreach my $mrna_id (grep { defined $mRNAs{$_} && $mRNAs{$_}{parent} =~ /\b\Q$gid\E\b/ } keys %mRNAs) {
+					my $mr = $mRNAs{$mrna_id};
+					$gene_info{$Gnum}{$gid}{mRNAs}{$mrna_id}{info} = $mr->{info};
+					#print"$Gname:$mRNAs{$mrna_id}{type}:$mrna_id\t$mRNAs{$mrna_id}{info}\n";
+					foreach my $children_id (sort keys %{$children{$mrna_id}})
+					{
+						#push @{$gene_info{$Gnum}{$gid}{mRNAs}{$mrna_id}{children}}, $$children{$mrna_id};
+						$gene_info{$Gnum}{$gid}{mRNAs}{$mrna_id}{children}{$children_id} = $children{$mrna_id}{$children_id};
+						#print"$Gname:$children{$mrna_id}{$children_id}{type}:$children_id\t$children{$mrna_id}{$children_id}{info}\n";
 					}
 				}
 			}
 		}
-		close $FL_gene_anno;
 	 }
 	 my %hash_gene_height;
 	 foreach my $Gnum (sort{$a<=>$b} keys %gene_info)
@@ -2633,16 +2645,21 @@ sub draw_gene_structure {
 		my $hash_regionX = $hash_region_ref->{$Gnum};
 		my $Gname = $hash_Ginfo_ref->{$Gnum}->{'name'};
 		my ($GnameX, $ChrX, $StartX, $EndX) = split(/_:_/,$hash_regionX);
+		my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$ChrX};
 		my $chr_len = abs($EndX - $StartX) + 1;
 		my $chr_width = $chr_len / $scale;
 		my $GH = $hash_gene_height_ref->{$Gnum};
+		print"$Gnum:$GnameX:\n";
+		my $j0 = 0;
 		foreach my $gene_id (sort keys %{$gene_info_ref->{$Gnum}})
 		{
 			my $Count = 0;
 			#$Count++;
+			$j0++;
 			my $mrna_count = scalar keys %{ $gene_info_ref->{$Gnum}{$gene_id}{mRNAs} };
 			my $gene_INFO = $gene_info_ref->{$Gnum}{$gene_id}{orig_info};
 			my ($Gchr, $Gstart, $Gend, $Gstrand) = split(/:/, $gene_INFO);
+			print"$j0:\t$gene_id\t$Gchr\t$Gstart\t$Gend\t$Gstrand\n";
 			my $rect_x = $SVG_x + ($SVG_main - $chr_width)/2;
 			my $rect_y = $SVG_y + 2 + $Chrtop + ($Gnum - 1) * ($Chrtop + $Chrdottom + $synteny_height) + 1 + $gene_height_merge;
 			#my ($GnameX, $ChrX, $StartX, $EndX) = split(/_:_/,$hash_regionX);
@@ -2656,20 +2673,6 @@ sub draw_gene_structure {
 			my $heightX = 2;
 			my $heightgap = 0.5;
 			my $HEIGHTX = $heightX + $heightgap;
-			my $gene_height = $heightX * $mrna_count + $heightgap * ($mrna_count - 1) + 5;
-			if(0 == 1){
-				$SVG1 -> rect(
-					 x => ($rect_x + $Gene_min),
-					 y => ($rect_y),
-					 width => $Gene_len,
-					 height =>  $gene_height,
-					 style=>{
-						 'fill'=>'#FFFFFF',
-						 'stroke'=>'#FFFFFF',
-						 'stroke-width'=>'0',
-					}
-				);
-			}
 			my $gene_id_height = 0;
 			foreach my $mrna_id (sort keys %{$gene_info_ref->{$Gnum}{$gene_id}{mRNAs}})
 			{
@@ -2685,59 +2688,62 @@ sub draw_gene_structure {
 				my $Mrna_max = ($Mstart_scale > $Mend_scale) ? $Mstart_scale : $Mend_scale;
 				my $Mrna_len = (abs($Mend - $Mstart) + 1) / $scale;
 				my $Mrna_height = $heightX;
-				if($Mstrand eq '+')
+				my $Xp1 = ($rect_x + $Mrna_min);
+				my $Xp2 = ($rect_x + $Mrna_max + 1);
+				my $X1 = $rect_x + $Mrna_max + 1;
+				my $Y1 = $rect_y - 0.5 + $Mrna_height/2 + $Count * $HEIGHTX;
+				my $X2 = $rect_x + $Mrna_max + 1;
+				my $Y2 = $rect_y + 0.5 + $Mrna_height/2 + $Count * $HEIGHTX;
+				my $X3 = $rect_x + $Mrna_max + 2;
+				my $Y3 = $rect_y + $Mrna_height/2 + $Count * $HEIGHTX;
+				if($strandX eq '+')
 				{
-					$SVG1->line(
-						x1 => ($rect_x + $Mrna_min), y1 => $rect_y + $Mrna_height/2 + $Count * $HEIGHTX,
-						x2 => ($rect_x + $Mrna_max + 1), y2 => $rect_y + $Mrna_height/2 + $Count * $HEIGHTX,
-						style => { stroke => 'black', 'stroke-width' => 0.2 }
-					);
-					my $X1 = $rect_x + $Mrna_max + 1;
-					my $Y1 = $rect_y - 0.5 + $Mrna_height/2 + $Count * $HEIGHTX;
-					my $X2 = $rect_x + $Mrna_max + 1;
-					my $Y2 = $rect_y + 0.5 + $Mrna_height/2 + $Count * $HEIGHTX;
-					my $X3 = $rect_x + $Mrna_max + 2;
-					my $Y3 = $rect_y + $Mrna_height/2 + $Count * $HEIGHTX;
-					if($polygon_off == 1)
+					if($Mstrand eq '+'){}
+					elsif($Mstrand eq '-')
 					{
-						$SVG1->polygon(
-							 points=>"$X1,$Y1 $X2,$Y2  $X3,$Y3",
-							 style=>{
-								 'fill'=>'block',
-								 'stroke'=>'black',
-								 'opacity'=>'1',
-								 'stroke-width'=>'0',
-							}
-						);
+						$Xp1 = ($rect_x + $Mrna_min - 1);
+						$Xp2 = ($rect_x + $Mrna_max);
+						$X1 = $rect_x + $Mrna_min - 1;
+						$X2 = $rect_x + $Mrna_min - 1;
+						$X3 = $rect_x + $Mrna_min - 2;
 					}
 				}
-				elsif($Gstrand eq '-')
+				elsif($strandX eq '-')
 				{
-					$SVG1->line(
-						x1 => ($rect_x + $Mrna_min - 1), y1 => $rect_y + $Mrna_height/2 + $Count * $HEIGHTX,
-						x2 => ($rect_x + $Mrna_max), y2 => $rect_y + $Mrna_height/2 + $Count * $HEIGHTX,
-						style => { stroke => 'black', 'stroke-width' => 0.2 }
-					);
-					my $X1 = $rect_x + $Mrna_min - 1;
-					my $Y1 = $rect_y - 0.5 + $Mrna_height/2 + $Count * $HEIGHTX;
-					my $X2 = $rect_x + $Mrna_min - 1;
-					my $Y2 = $rect_y + 0.5 + $Mrna_height/2 + $Count * $HEIGHTX;
-					my $X3 = $rect_x + $Mrna_min - 2;
-					my $Y3 = $rect_y + $Mrna_height/2 + $Count * $HEIGHTX;
-					if($polygon_off == 1)
+					$Xp1 = $rect_x + ($chr_width - $Mrna_min);
+					$Xp2 = $rect_x + ($chr_width - $Mrna_max) - 1;
+					$X1 = $rect_x + ($chr_width - $Mrna_max) - 1;
+					$X2 = $rect_x + ($chr_width - $Mrna_max) - 1;
+					$X3 = $rect_x + ($chr_width - $Mrna_max) - 2;
+
+					if($Mstrand eq '+'){}
+					elsif($Mstrand eq '-')
 					{
-						$SVG1->polygon(
-							 points=>"$X1,$Y1 $X2,$Y2  $X3,$Y3",
-							 style=>{
-								 'fill'=>'block',
-								 'stroke'=>'black',
-								 'opacity'=>'1',
-								 'stroke-width'=>'0',
-							}
-						);
+						$Xp1 = $rect_x + ($chr_width - $Mrna_min) + 1;
+						$Xp2 = $rect_x + ($chr_width - $Mrna_max);
+						$X1 = $rect_x + ($chr_width - $Mrna_min) + 1;
+						$X2 = $rect_x + ($chr_width - $Mrna_min) + 1;
+						$X3 = $rect_x + ($chr_width - $Mrna_min) + 2;
 					}
 				}
-				
+				$SVG1->line(
+					x1 => ($Xp1), y1 => $rect_y + $Mrna_height/2 + $Count * $HEIGHTX,
+					x2 => ($Xp2), y2 => $rect_y + $Mrna_height/2 + $Count * $HEIGHTX,
+					style => { stroke => 'black', 'stroke-width' => 0.2 }
+				);
+				if($polygon_off == 1)
+				{
+					$SVG1->polygon(
+						 points=>"$X1,$Y1 $X2,$Y2  $X3,$Y3",
+						 style=>{
+							 'fill'=>'block',
+							 'stroke'=>'black',
+							 'opacity'=>'1',
+							 'stroke-width'=>'0',
+						}
+					);
+				}
+
 				foreach my $children_id (sort keys %{$gene_info_ref->{$Gnum}{$gene_id}{mRNAs}{$mrna_id}{children}})
 				{
 					my $children_INFO = $gene_info_ref->{$Gnum}{$gene_id}{mRNAs}{$mrna_id}{children}{$children_id}{info};
@@ -2767,8 +2773,14 @@ sub draw_gene_structure {
 						$C_height = $heightX - 1;
 						$C_color = '#357089';  
 					}
+					my $Xutr = $rect_x + $child_min;
+					if($strandX eq '+'){}
+					elsif($strandX eq '-')
+					{
+						$Xutr = ($rect_x + $chr_width - $child_min - $child_len);
+					}
 					$SVG1 -> rect(
-						 x => ($rect_x + $child_min),
+						 x => $Xutr,
 						 y => ($rect_y + ($Mrna_height - $C_height)/2  + $Count * $HEIGHTX),
 						 width => $child_len,
 						 height =>  $C_height,
@@ -2779,11 +2791,17 @@ sub draw_gene_structure {
 						}
 					);
 				}
-			$Count++;
+				$Count++;
 			}
 			$gene_id_height = $rect_y + $Count * $HEIGHTX + 3.5;
+			my $Xxxname = ($rect_x + $Gene_min);
+			if($strandX eq '+'){}
+			elsif($strandX eq '-')
+			{
+				$Xxxname = ($rect_x + $chr_width - $Gene_min - $Gene_len);
+			}
 			$SVG1 -> text(
-				 x => ($rect_x + $Gene_min),
+				 x => $Xxxname,
 				 y => ($gene_id_height),
 				 style => {
 					'font-family' => 'Arial', #"Courier",
@@ -2802,7 +2820,7 @@ sub draw_chr_region {
 	my ($SVG1, $hash_Ginfo_ref, $hash_region_ref, $genome_num_ref, $hash_gene_height_ref) = @_;
 	#记录颜色
 	my $gene_height_merge = 0;
-	foreach my $Gnum (sort { $a <=> $b } keys %aligned_order)
+	foreach my $Gnum (sort { $a <=> $b } keys %{$hash_Ginfo_ref})
 	{
 		my $Gname = $hash_Ginfo_ref->{$Gnum}->{'name'};
 		my $chr_tags = $hash_Ginfo_ref->{$Gnum}->{'tags'} // "height:5;opacity:0.8;color:'#39A5D6';"; #lw:1.5;color:#FF0000;opacity:1
@@ -2822,7 +2840,7 @@ sub draw_chr_region {
 		my $chr_width = $chr_len / $scale;
 		my $rect_x = $SVG_x + ($SVG_main - $chr_width)/2;
 		my $rect_y = $SVG_y + 2 + $Chrtop + ($Gnum - 1) * ($Chrtop + $Chrdottom + $synteny_height) + $gene_height_merge;
-		draw_scale_axis_region($SVG1, $StartX, $EndX, $rect_x, $rect_y - 2 - $Chrtop);
+		draw_scale_axis_region($SVG1, $hash_Ginfo_ref, $Gnum, $ChrX, $StartX, $EndX, $rect_x, $rect_y - 2 - $Chrtop);
 		$gene_height_merge += $GH;
 		##### chromosome region
 		
@@ -2870,8 +2888,8 @@ sub draw_chr_region {
 }
 ## 绘制局部的刻度尺
 sub draw_scale_axis_region {
-    my ($SVG1, $StartX, $EndX, $scale_X, $scale_Y) = @_;
-
+    my ($SVG1, $hash_Ginfo_ref, $Gnum, $ChrX, $StartX, $EndX, $scale_X, $scale_Y) = @_;
+	my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$ChrX};
     # 参数检查 & 默认
     die "StartX > EndX\n" if !defined $StartX || !defined $EndX || $StartX > $EndX;
     #my $bp_per_px = defined $bp_per_px_param ? $bp_per_px_param : (defined $scale ? $scale : 1000);
@@ -2917,18 +2935,25 @@ sub draw_scale_axis_region {
     my $first_minor = int($StartX / $minor_step) * $minor_step;
 
     # 绘制次刻度与主刻度（循环次刻度，但只绘在 [StartX, EndX] 区间内）
-    for (my $tick = $first_minor; $tick <= $EndX; $tick += $minor_step) {
-        next if $tick < $StartX;
-        # 精确到整数坐标（避免浮点模运算问题）
-        my $tick_i = int($tick + 0.5);
-        my $is_major = ($tick_i % $valueSpan == 0) ? 1 : 0;
+	for (my $tick = $first_minor; $tick <= $EndX; $tick += $minor_step) {
+		next if $tick < $StartX;
+		# 精确到整数坐标（避免浮点模运算问题）
+		my $tick_i = int($tick + 0.5);
+		my $is_major = ($tick_i % $valueSpan == 0) ? 1 : 0;
 
-        # 计算像素 x（相对于 StartX）
-        my $xpx = $scale_X + ($tick - $StartX) / $bp_per_px;
-
-        if ($is_major) {
-            # 主刻度：画长线并加标签（格式化标签）
-            my $label;
+		# 计算像素 x（相对于 StartX）
+		my $xpx = $scale_X;
+		if($strandX eq '+')
+		{
+			$xpx = $scale_X + ($tick - $StartX) / $bp_per_px;
+		}
+		elsif($strandX eq '-')
+		{
+			$xpx = $scale_X + ($region_len - ($tick - $StartX)) / $bp_per_px;
+		}
+		if ($is_major) {
+			# 主刻度：画长线并加标签（格式化标签）
+			my $label;
 			if    ($t_postfix eq 'Gb') { $label = ($tick / 1e9) . "Gb"; }
 			elsif ($t_postfix eq 'Mb') { $label = ($tick / 1e6) . "Mb"; }
 			elsif ($t_postfix eq 'Kb') { $label = ($tick / 1e3) . "Kb"; }
@@ -2936,43 +2961,42 @@ sub draw_scale_axis_region {
 			# 去掉末尾多余的 .0 / 0
 			$label =~ s/(\.\d*?)0+$/$1/;
 			$label =~ s/\.$//;
-            $SVG1->line(
-                x1 => $xpx, y1 => ($scale_Y - 6),
-                x2 => $xpx, y2 => $scale_Y,
-                style => { stroke => 'black', 'stroke-width' => 0.2 }
-            );
-            $SVG1->text(
-                x => $xpx, y => ($scale_Y - 8),
-                style => { 'font-size' => 4, 'text-anchor' => 'middle', 'font-family' => 'Arial' }
-            )->cdata($label);
-        } else {
-            # 次刻度：短线
-            $SVG1->line(
-                x1 => $xpx, y1 => ($scale_Y - 2),
-                x2 => $xpx, y2 => $scale_Y,
-                style => { stroke => 'black', 'stroke-width' => 0.12 }
-            );
-        }
-    }
+			$SVG1->line(
+				x1 => $xpx, y1 => ($scale_Y - 6),
+				x2 => $xpx, y2 => $scale_Y,
+				style => { stroke => 'black', 'stroke-width' => 0.2 }
+			);
+			$SVG1->text(
+				x => $xpx, y => ($scale_Y - 8),
+				style => { 'font-size' => 4, 'text-anchor' => 'middle', 'font-family' => 'Arial' }
+			)->cdata($label);
+		} else {
+			# 次刻度：短线
+			$SVG1->line(
+				x1 => $xpx, y1 => ($scale_Y - 2),
+				x2 => $xpx, y2 => $scale_Y,
+				style => { stroke => 'black', 'stroke-width' => 0.12 }
+			);
+		}
+	}
 
-    # 若区间内没有任何“整数主刻度”（例如 StartX..EndX 比 valueSpan 小且不跨主刻度边界），
-    # 那就至少在起点/终点画标签以保持可读性
-    my $first_major = int( ($StartX + $valueSpan - 1) / $valueSpan ) * $valueSpan;
-    if ($first_major > $EndX) {
-        # 画起点和终点（标签）
-        for my $tick ($StartX, $EndX) {
-            my $xpx = $scale_X + ($tick - $StartX) / $bp_per_px;
-            my $label;
-            if ($t_postfix eq 'Gb') { $label = sprintf("%.2fGb", $tick / 1e9); }
-            elsif ($t_postfix eq 'Mb') { $label = sprintf("%.2fMb", $tick / 1e6); }
-            elsif ($t_postfix eq 'Kb') { $label = sprintf("%.0fKb", $tick / 1e3); }
-            else { $label = sprintf("%dbp", $tick); }
+	# 若区间内没有任何“整数主刻度”（例如 StartX..EndX 比 valueSpan 小且不跨主刻度边界），
+	# 那就至少在起点/终点画标签以保持可读性
+	my $first_major = int( ($StartX + $valueSpan - 1) / $valueSpan ) * $valueSpan;
+	if ($first_major > $EndX) {
+		# 画起点和终点（标签）
+		for my $tick ($StartX, $EndX) {
+			my $xpx = $scale_X + ($tick - $StartX) / $bp_per_px;
+			my $label;
+			if ($t_postfix eq 'Gb') { $label = sprintf("%.2fGb", $tick / 1e9); }
+			elsif ($t_postfix eq 'Mb') { $label = sprintf("%.2fMb", $tick / 1e6); }
+			elsif ($t_postfix eq 'Kb') { $label = sprintf("%.0fKb", $tick / 1e3); }
+			else { $label = sprintf("%dbp", $tick); }
 
-            $SVG1->line(x1=>$xpx, y1=>($scale_Y - 6), x2=>$xpx, y2=>$scale_Y, style=>{stroke=>'black','stroke-width'=>0.2});
-            $SVG1->text(x=>$xpx, y=>($scale_Y - 8), style=>{'font-size'=>4, 'text-anchor'=>'middle'})->cdata($label);
-        }
-    }
-
+			$SVG1->line(x1=>$xpx, y1=>($scale_Y - 6), x2=>$xpx, y2=>$scale_Y, style=>{stroke=>'black','stroke-width'=>0.2});
+			$SVG1->text(x=>$xpx, y=>($scale_Y - 8), style=>{'font-size'=>4, 'text-anchor'=>'middle'})->cdata($label);
+		}
+	}
     # 横轴（整条）
     my $axis_len_px = $region_len / $bp_per_px;
     $SVG1->line(
@@ -2980,6 +3004,39 @@ sub draw_scale_axis_region {
         x2 => ($scale_X + $axis_len_px), y2 => $scale_Y,
         style => { stroke => 'black', 'stroke-width' => 0.2 }
     );
+	{
+		my $Xp1 = $scale_X + $axis_len_px - 0.5;
+		my $Xp2 = $scale_X + $axis_len_px + 3;
+		my $X1 = ($scale_X + $axis_len_px + 3);
+		my $Y1 = $scale_Y - 1;
+		my $X2 = ($scale_X + $axis_len_px + 3);
+		my $Y2 = $scale_Y + 1;
+		my $X3 = ($scale_X + $axis_len_px + 5);
+		my $Y3 = $scale_Y;
+		if($strandX eq '+'){}
+		elsif($strandX eq '-')
+		{
+			$Xp1 = $scale_X + 0.5;
+			$Xp2 = $scale_X - 3;
+			$X1 = ($scale_X - 3);
+			$X2 = ($scale_X - 3);
+			$X3 = ($scale_X - 5);
+		}
+		$SVG1->line(
+			x1 => $Xp1, y1 => $scale_Y,
+			x2 => $Xp2, y2 => $scale_Y,
+			style => { stroke => 'black', 'stroke-width' => 0.2 }
+		);
+		$SVG1->polygon(
+			 points=>"$X1,$Y1 $X2,$Y2  $X3,$Y3",
+			 style=>{
+				 'fill'=>'block',
+				 'stroke'=>'black',
+				 'opacity'=>'1',
+				 'stroke-width'=>'0',
+			}
+		);
+	}
 }
 
 
@@ -2990,10 +3047,13 @@ sub draw_scale_axis_region {
 sub draw_syn_region {
 	my ($SVG1, $hash_syninfo_ref, $hash_Ginfo_ref, $hash_region_ref, $syn_type, $genome_num_ref, $hash_gene_height_ref) = @_;
 	my $genome_num = 0;
+	if(0)
+	{
 	my %match;
 	my %inversion0;     # $inversion0{$Syn}{$R}{$Q} = signed score (正负累加)
 	my %hash_match_best0;
 	my %hash_inversion0;
+	my %chr_orient;
     # 读取共线性信息文件
 	foreach my $Syn_num(sort{$a<=>$b} keys %{$hash_syninfo_ref})
 	{
@@ -3007,7 +3067,7 @@ sub draw_syn_region {
 				my $strand = $hash_syninfo_ref->{$Syn_num}->{$keyR}->{$keyQ};
 				my ($ref_genome, $chrR, $startR, $endR) = split(/:/,$keyR);
 				my ($query_genome, $chrQ, $startQ, $endQ) = split(/:/,$keyQ);
-				#print"test:$ref_genome\t$chrR\t$startR\t$endR:$query_genome\t$chrQ\t$startQ\t$endQ:$strand\n";
+				#print"$ref_genome\t$chrR\t$startR\t$endR:$query_genome\t$chrQ\t$startQ\t$endQ:$strand\n";
 				my $lenR = abs($endR - $startR) + 1;
 				if($genome_num == 1)
 				{
@@ -3035,7 +3095,6 @@ sub draw_syn_region {
         }
         # 分数从大到小
         @pairs = sort { $b->[2] <=> $a->[2] } @pairs;
-
         my (%R_used, %Q_used);
         for my $p (@pairs) {
             my ($r,$q,$s) = @$p;
@@ -3050,13 +3109,17 @@ sub draw_syn_region {
 	foreach my $Syn_num(sort{$a<=>$b} keys %hash_match_best0)
 	{
 		my $chr_num = 0;
+		my $jj0 = $Syn_num + 1;
+		my $Gname1 = $hash_Ginfo_ref->{$Syn_num}->{'name'};
+		my $Gname2 = $hash_Ginfo_ref->{$jj0}->{'name'};
 		foreach my $chrR(sort keys %{$hash_match_best0{$Syn_num}})
 		{
 			$chr_num++;
 			$hash_match_best_num{$Syn_num}->{$chrR} = $chr_num;
 			my $chrQ = $hash_match_best0{$Syn_num}->{$chrR};
 			my $inv = $hash_inversion0{$Syn_num}->{$chrR}->{$chrQ};
-			print"Num:$Syn_num\tReference:$chrR\tQuery:$chrQ\tStrand:$inv\n";
+			
+			#print"Num:$Syn_num\tReference:$Gname1:$chrR\tQuery:$Gname2:$chrQ\tStrand:$inv\n";
 		}
 	}
     # 依次传播到 G2、G3、…
@@ -3064,9 +3127,10 @@ sub draw_syn_region {
     for my $Syn_num (sort { $a <=> $b } keys %hash_match_best0) {
         my $ref_num   = $genome_num;
         my $query_num = $genome_num + 1;
-		my $ref_order = $aligned_order{$ref_num};
-		my @query_order;
-		foreach my $chrR (@$ref_order) {
+		my $hashG = $hash_read_chr_order{$ref_num};
+		foreach my $numX(sort{$a<=>$b} keys %{$hashG})
+		{
+			my $chrR = $hash_read_chr_order{$ref_num}->{$numX};
 			if (exists $hash_match_best0{$Syn_num}->{$chrR}) {
 				my $chrQ = $hash_match_best0{$Syn_num}->{$chrR};
 				my $rel  = $hash_inversion0{$Syn_num}->{$chrR}->{$chrQ};
@@ -3093,18 +3157,8 @@ sub draw_syn_region {
 		}
         $genome_num++;
     }
-	print"region:\n";
-	foreach my $GN(sort{$a<=>$b} keys %aligned_order)
-	{
-		#print"$GN:\n";
-		my $GN2 = $aligned_order{$GN};
-		foreach my $chr (@$GN2)
-		{
-			my $re1 = $chr_orient{$GN}->{$chr};
-			#print"$chr\t$re1\n";
-		}
 	}
-	
+	print"region:\n";
 	$genome_num = 0;
 	my $gene_height_merge = 0;
     # 读取共线性信息文件
@@ -3130,10 +3184,12 @@ sub draw_syn_region {
 				my ($GnameXQ, $ChrXQ, $StartXQ, $EndXQ) = split(/_:_/,$hash_regionXQ);
 				my $GnameR = $hash_Ginfo_ref->{$ref_num}->{'name'};
 				my $GnameQ = $hash_Ginfo_ref->{$query_num}->{'name'};
-				my $chr_lenR = abs($R1 - $R2) + 1;
-				my $chr_lenQ = abs($Q1 - $Q2) + 1;
-				my $strandR = $chr_orient{$ref_num}->{$chrR};
-				my $strandQ = $chr_orient{$query_num}->{$chrQ};
+				#my $chr_lenR = abs($R1 - $R2) + 1;
+				#my $chr_lenQ = abs($Q1 - $Q2) + 1;
+				#my $strandR = $chr_orient{$ref_num}->{$chrR};
+				#my $strandQ = $chr_orient{$query_num}->{$chrQ};
+				my $strandR = $hash_Ginfo_ref->{$ref_num}->{'strand'}->{$chrR};
+				my $strandQ = $hash_Ginfo_ref->{$query_num}->{'strand'}->{$chrQ};
 				my $region_lenR = abs($EndXR - $StartXR) + 1;
 				my $region_lenQ = abs($EndXQ - $StartXQ) + 1;
 				my $Rchr_width = $region_lenR / $scale;
@@ -3155,25 +3211,21 @@ sub draw_syn_region {
 				{
 					$startR = $R1;
 					$endR   = $R2;
-					#print"$GnameR:$chr_lenR:$startR\t$endR\t$strandR\n";
 				}
 				elsif($strandR eq '-')
 				{
-					$startR = $chr_lenR - $R2 + 1;
-					$endR   = $chr_lenR - $R1 + 1;
-					#print"$GnameR:$chr_lenR:$startR\t$endR\t$strandR\n";
+					$startR = $region_lenR - $R2 + 1;
+					$endR   = $region_lenR - $R1 + 1;
 				}
 				if($strandQ eq '+')
 				{
 					$startQ = $Q1;
 					$endQ   = $Q2;
-					#print"$GnameQ:$chr_lenQ:$startQ\t$endQ\t$strandQ\n\n";
 				}
 				elsif($strandQ eq '-')
 				{
-					$startQ = $chr_lenQ - $Q2 + 1;
-					$endQ   = $chr_lenQ - $Q1 + 1;
-					#print"$GnameQ:$chr_lenQ:$startQ\t$endQ\t$strandQ\n\n";
+					$startQ = $region_lenQ - $Q2 + 1;
+					$endQ   = $region_lenQ - $Q1 + 1;
 				}
 				if($strandR ne $strandQ)
 				{
@@ -3220,7 +3272,6 @@ sub draw_syn_region {
 				my $Y31=($Y1+$Y3)/2;
 				my $X13=$X1;
 				my $Y13=($Y1+$Y3)/2;
-				
 				my $Y23 = ($Y2+$Y3)/2;
 				my $Y14=($Y1+$Y4)/2;
 				#print"$syn_type\n\n";
@@ -3274,7 +3325,7 @@ sub estimate_svg_text_width {
 }
 
 sub drawing_SVG1 {
-	 my ($config_ref,$global_max,$global_min,$Gname_max_num,$chrname_max_num,$chr_num_min,$genome_num) = @_;
+	 my ($config_ref,$global_max,$global_min,$Gname_max_num,$chrname_max_num,$chr_num_max,$genome_num) = @_;
 	$SVG_x = $SVG_x_left + $Gname_max_len + $chrname_max_len + 2;
 	# 在左侧添加端粒的绘制空间
 	my $tel_width = 0;
@@ -3327,7 +3378,7 @@ sub drawing_SVG1 {
 	#Canvas size
 	my $SVG1= SVG -> new();
 	my $SVG1_canvas_w = sprintf("%.0f", $SVG_main + $SVG_x + $SVG_x_right + 15);
-	my $SVG1_canvas_h = sprintf("%.0f", ($ChrHight + $Chrtop + $Chrdottom)* $chr_num_min * $genome_num + $synteny_height * ($chr_num_min) * $genome_num + $SVG_x_top + $SVG_legend_height_merge);
+	my $SVG1_canvas_h = sprintf("%.0f", ($ChrHight + $Chrtop + $Chrdottom)* $chr_num_max * $genome_num + $synteny_height * ($chr_num_max) * $genome_num + $SVG_x_top + $SVG_legend_height_merge);
 	$SVG1= SVG -> new(width => $SVG1_canvas_w . 'mm', height   => $SVG1_canvas_h . 'mm', viewBox => "0 0 $SVG1_canvas_w $SVG1_canvas_h");
 
 	#绘制共线性块
@@ -3750,6 +3801,7 @@ sub draw_centromere_block {
 		{
 			$chr_num++;
 			my $chr_len = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
+			my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_name};
 			my $chr_width = $chr_len / $scale;
 			my $hashT1 = $centromere_info{$Gnum}->{$chr_name};
 			foreach my $cent_start(sort keys %{$hashT1})
@@ -3757,15 +3809,22 @@ sub draw_centromere_block {
 				my $hashT2 = $centromere_info{$Gnum}->{$chr_name}->{$cent_start};
 				foreach my $cent_end(sort keys %{$hashT2})
 				{
+					if($strandX eq '-')
+					{
+						my $end_GAI = $chr_len - $cent_start;
+						my $start_GAI = $chr_len - $cent_end;
+						$cent_start = $start_GAI;
+						$cent_end = $end_GAI;
+					}
 					my $rect_x = $SVG_x;
 					my $rect_y = $SVG_y + 2 + $Chrtop + ($chr_num - 1) * $genome_num_ref * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height) + ($genome_num - 1) * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height);
-					my $r_x = ($cent_end - $cent_start + 1) / (2 * $scale);
+					my $r_x = abs($cent_end - $cent_start + 1) / (2 * $scale);
 					my $r_y = $ChrHight / 2;
 					my $X1 = $rect_x + $cent_start / $scale;
 					my $Y1 = $rect_y + $ChrHight;
 					my $X2 = $X1;
 					my $Y2 = $rect_y;
-					my $X3 = $X2 + ($cent_end - $cent_start + 1) / $scale;
+					my $X3 = $X2 + abs($cent_end - $cent_start + 1) / $scale;
 					my $Y3 = $Y2;
 					my $X4 = $X3;
 					my $Y4 = $Y1;
@@ -3863,10 +3922,16 @@ sub draw_telomere_block {
 		{
 			$chr_num++;
 			my $chr_len = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
+			my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_name};
 			my $chr_width = $chr_len / $scale;
 			my $hashT = $telomere_info{$Gnum}->{$chr_name};
 			foreach my $tel_site(sort keys %{$hashT})
 			{
+				if($strandX eq '-')
+				{
+					if($tel_site == 1){$tel_site = $chr_len;}
+					else{$tel_site = 1;}
+				}
 				##### print "$chr_name\t$chr_len\n";
 				my $rect_x = $SVG_x;
 				my $rect_y = $SVG_y + 2 + $Chrtop + ($chr_num - 1) * $genome_num_ref * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height) + ($genome_num - 1) * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height);
@@ -3985,109 +4050,113 @@ sub draw_scale_axis {
 #绘制染色体块及绘制刻度尺,\%hash_match_best
 sub draw_chr_block {
 	my ($SVG1, $hash_Ginfo_ref, $genome_num_ref, $tel_width) = @_;
-	#my %aligned_order;  # 存储每个基因组的染色体顺序（最终与 G1 对齐）
-
-	# 输出最终对齐顺序
-	foreach my $Gnum (sort { $a <=> $b } keys %aligned_order)
+	foreach my $Gnum (sort { $a <=> $b } keys %{$hash_Ginfo_ref})
 	{
 		my $Gname = $hash_Ginfo_ref->{$Gnum}->{'name'};
 		my $chr_tags = $hash_Ginfo_ref->{$Gnum}->{'tags'} // "height:5;opacity:0.8;color:'#39A5D6';"; #lw:1.5;color:#FF0000;opacity:1
+		my $hashG = $hash_read_chr_order{$Gnum};
 		if (defined $chr_tags) 
 		{
 			if ($chr_tags =~ /height:\s*['"]?([\d.]+)['"]?/){$ChrHight = $1;}
 			if ($chr_tags =~ /opacity:\s*['"]?([\d.]+)['"]?/){$Chropacity = $1;}
 			if ($chr_tags =~ /color:\s*['"]?([^'";]+)['"]?/){$Chrcolor = $1;}
 		}
-		my @arr_chr = @{$aligned_order{$Gnum}};
-		if(0)
+		foreach my $numX(sort{$a<=>$b} keys %{$hashG})
 		{
-			foreach my $GN(sort{$a<=>$b} keys %aligned_order)
-			{
-				my $GnameN = $hash_Ginfo_ref->{$GN}->{'name'};
-				#print"$GN $GnameN:\n";
-				my $GN2 = $aligned_order{$GN};
-				my $outputchr_ch;
-				my @arr_chr_chain;
-				foreach my $chr (@$GN2)
-				{
-					my $re1 = $chr_orient{$GN}->{$chr};
-					#print"$chr\t$re1\n";
-					$outputchr_ch = "$chr" . '[' . "$re1" . ']';
-					push(@arr_chr_chain,$outputchr_ch);
-				}
-				my $output_merge = join(",",@arr_chr_chain);
-				#print "$GN $GnameN: @arr_chr_chain\n";
-				print "$GN $GnameN: $output_merge\n";
-				#print "$Gnum $Gname: @arr_chr\n";
-			}
-		}
-		my $chr_number = 0;
-		foreach my $chr_name(@arr_chr)
-		{
-			$chr_number++;
+			my $chr_name = $hash_read_chr_order{$Gnum}->{$numX};
 			my $chr_len = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
-			##### print "$chr_name\t$chr_len\n";
+			my $chrlen_maxX = 0;
 			my $rect_x = $SVG_x;
-			my $rect_y = $SVG_y + 2 + $Chrtop + ($chr_number - 1) * $genome_num_ref * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height) + ($Gnum - 1) * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height);
+			my $rect_y = $SVG_y + 2 + $Chrtop + ($numX - 1) * $genome_num_ref * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height) + ($Gnum - 1) * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height);
 			# 绘制reference长度的刻度线
 			if($Gnum == 1){draw_scale_axis($SVG1, $chr_len, $rect_x, $rect_y - 2 - $Chrtop);}
 			##### chromosome region
 			my $chr_width = $chr_len / $scale;
 			my $chr_r = $ChrHight/2;
 			$chr_r = $chr_r;
-			$SVG1 -> rect(
-				 x => ($rect_x),
-				 y => ($rect_y),
-				 width => $chr_width,
-				 height => $ChrHight,
-				 style=>{
-					 'fill'=>'#FFFFFF',
-					 'stroke'=>'#FFFFFF',
-					 'rx'=>"$chr_r",
-					 'ry'=>"$chr_r",
-					 'stroke-width'=>'0.1',
-				}
-			);
-			$SVG1 -> rect(
-				 x => ($rect_x),
-				 y => ($rect_y),
-				 width => $chr_width,
-				 height => $ChrHight,
-				 style=>{
-					 'fill'=>"$Chrcolor",
-					 'fill-opacity'   => "$Chropacity",
-					 'stroke'=>'black',
-					 'rx'=>"$chr_r",
-					 'ry'=>"$chr_r",
-					 'stroke-width'=>'0.1',
-				}
-			);
-			my $dot = "&#183;";  # HTML实体形式（中点字符）
-			my $NAME_Gchr = "$Gname" . $dot . "$hash_chrGAI{$Gnum}->{$chr_name}";
-			my $X1 = ($rect_x - $tel_width - 2);
-			$SVG1 -> text(
-				 x => $X1,
-				 y => ($rect_y + $ChrHight*3/4),
-                 style => {
-                    'font-family' => 'Arial', #"Courier",
-                    'stroke'      => 'none',
-                    'font-size'   => '4',
-					'text-anchor' => 'end',   # 可为 start | middle | end
-                }
-			)->cdata("$NAME_Gchr");
+			if(($chr_len>1)or($chr_name ne 'None' ))
+			{
+				$SVG1 -> rect(
+					 x => ($rect_x),
+					 y => ($rect_y),
+					 width => $chr_width,
+					 height => $ChrHight,
+					 style=>{
+						 'fill'=>'#FFFFFF',
+						 'stroke'=>'#FFFFFF',
+						 'rx'=>"$chr_r",
+						 'ry'=>"$chr_r",
+						 'stroke-width'=>'0.1',
+					}
+				);
+				$SVG1 -> rect(
+					 x => ($rect_x),
+					 y => ($rect_y),
+					 width => $chr_width,
+					 height => $ChrHight,
+					 style=>{
+						 'fill'=>"$Chrcolor",
+						 'fill-opacity'   => "$Chropacity",
+						 'stroke'=>'black',
+						 'rx'=>"$chr_r",
+						 'ry'=>"$chr_r",
+						 'stroke-width'=>'0.1',
+					}
+				);
+				my $dot = "&#183;";  # HTML实体形式（中点字符）
+				my $NAME_Gchr = "$Gname" . $dot . "$hash_chrGAI{$Gnum}->{$chr_name}";
+				my $X1 = ($rect_x - $tel_width - 2);
+				$SVG1 -> text(
+					 x => $X1,
+					 y => ($rect_y + $ChrHight*3/4),
+					 style => {
+						'font-family' => 'Arial', #"Courier",
+						'stroke'      => 'none',
+						'font-size'   => '4',
+						'text-anchor' => 'end',   # 可为 start | middle | end
+					}
+				)->cdata("$NAME_Gchr");
+			}
 		}
 	}
 }
 
-
 sub find_best_synteny_matches {
     my ($hash_Ginfo_ref, $hash_syninfo_ref) = @_;
-    my %match;          # $match{$Syn}{$R}{$Q} = score
-    my %inversion0;     # $inversion0{$Syn}{$R}{$Q} = signed score (正负累加)
-    # --- 读取共线性文件，直接累加打分（无需预初始化） ---
+	my $out_sort_path = '';#$hash_Ginfohash_Ginfo_ref{$Gnum}->{'fasta'};
+	my $sort_dir = 'sort_fa_bed';
+    my %match;
+	my %match_ratio_R;
+	my %match_ratio_Q;
+    my %inversion0;
+	my %hash_match_best;
+	my %out_chr_len_strand;
+	my $chr_maxnum = 0;
+	my %off_chr;
+	my $Syn_max = -1;
+	foreach my $Gnum (sort{$a<=>$b} keys %{$hash_Ginfo_ref})
+	{
+		my $chr_num = 0;
+		$Syn_max++;
+		if($Syn_max == 0)
+		{
+			my $out_sort_path0 = dirname($hash_Ginfo_ref->{$Gnum}->{'fasta'});
+			$out_sort_path = $out_sort_path0 . '/' . $sort_dir . '/';
+			unless (-d $out_sort_path) {
+				system("mkdir -p \"$out_sort_path\"");
+				die "Directory '$out_sort_path' does not exist and could not be created!\n" unless -d $out_sort_path;
+			}
+		}
+		foreach my $chrX (sort keys %{$hash_Ginfo_ref->{$Gnum}->{'chr'}})
+		{
+			$chr_num++;
+			$off_chr{$Gnum}{$chrX} = 0;
+		}
+		$chr_maxnum = $chr_num > $chr_maxnum ? $chr_num : $chr_maxnum;
+	}
     for my $Syn_num (sort { $a <=> $b } keys %{$hash_syninfo_ref})
 	{
-        my $aln = $hash_syninfo_ref->{$Syn_num}{align} or die "No align file for Syn $Syn_num\n";
+        my $aln = $hash_syninfo_ref->{$Syn_num}{'align'} or die "No align file for Syn $Syn_num\n";
         open my $FL_align, "<", $aln or die "Cannot open $aln: $!";
         while (<$FL_align>)
 		{
@@ -4097,134 +4166,255 @@ sub find_best_synteny_matches {
             my ($rChr,$r1,$r2,$qChr,$q1,$q2,$strand) = @t[0,1,2,3,4,5,6];
             my $lenR = abs($r2 - $r1) + 1;
             $match{$Syn_num}{$rChr}{$qChr} += $lenR;
-            #my $same_dir = ($r1 <= $r2 && $q1 <= $q2) || ($r1 >  $r2 && $q1 >  $q2);
-            #$inversion0{$Syn_num}{$rChr}{$qChr} += $same_dir ? $lenR : -$lenR;
-			if($strand eq '+'){$inversion0{$Syn_num}{$rChr}{$qChr} += $lenR;}
-			elsif($strand eq '-'){$inversion0{$Syn_num}{$rChr}{$qChr} += -$lenR;}
+			if($strand eq '+'){$inversion0{$Syn_num}{$rChr}{$qChr} += $lenR;$inversion_plus{$Syn_num}{$rChr}{$qChr} += $lenR;}
+			elsif($strand eq '-'){$inversion0{$Syn_num}{$rChr}{$qChr} += -$lenR;$inversion_minus{$Syn_num}{$rChr}{$qChr} += -$lenR;}
         }
         close $FL_align;
     }
-
-    # --- 对每个 Syn_num，做“一对一”的最大权匹配（贪心版） ---
-    my (%best, %strand);   # 返回：$best{$Syn}{$R} = $Q；$strand{$Syn}{$R}{$Q} = '+'|'-'
-    for my $Syn_num (sort { $a <=> $b } keys %match)
+	for my $Syn_num (sort { $a <=> $b } keys %match)
 	{
-        # 收集所有 (R,Q,score)
-        my @pairs;
-        for my $r (keys %{ $match{$Syn_num} }) {
-            for my $q (keys %{ $match{$Syn_num}{$r} }) {
-                my $s = $match{$Syn_num}{$r}{$q} // 0;
-                push @pairs, [$r,$q,$s] if $s > 0;
-            }
-        }
-        # 分数从大到小
-        @pairs = sort { $b->[2] <=> $a->[2] } @pairs;
-
-        my (%R_used, %Q_used);
-        for my $p (@pairs) {
-            my ($r,$q,$s) = @$p;
-            next if $R_used{$r} || $Q_used{$q};     # 已占用就跳过
-            $hash_match_best{$Syn_num}{$r} = $q;
-            $R_used{$r} = 1; $Q_used{$q} = 1;
-
-            my $inv = $inversion0{$Syn_num}{$r}{$q} // 0;
-            $hash_inversion{$Syn_num}{$r}{$q} = $inv >= 0 ? '+' : '-';
-        }
-    }
-	foreach my $Syn_num(sort{$a<=>$b} keys %hash_match_best)
-	{
-		my $chr_num = 0;
-		my $aln = $hash_syninfo_ref->{$Syn_num}{align};
-		#print"$Syn_num:$aln\n";
-		foreach my $chrR(sort keys %{$hash_match_best{$Syn_num}})
+        my $Gnum_R = $Syn_num;
+		my $Gnum_Q = $Syn_num + 1;
+		for my $r (keys %{ $match{$Syn_num} })
 		{
-			$chr_num++;
-			$hash_match_best_num{$Syn_num}->{$chrR} = $chr_num;
-			my $chrQ = $hash_match_best{$Syn_num}->{$chrR};
-			my $inv = $hash_inversion{$Syn_num}->{$chrR}->{$chrQ};
-			#print"Num:$chr_num\tReference:$chrR\tQuery:$chrQ\tStrand:$inv\n";
-		}
-	}
-	my $genome_num = 1;
-	# Step 1: G1 染色体顺序直接取
-	$aligned_order{$genome_num} = \@arr_ref_chrname;
-
-	# Step 2+: 依次对齐 G2, G3, ...
-	foreach my $Syn_num (sort { $a <=> $b } keys %hash_match_best) {
-		my $ref_genome   = $genome_num;
-		my $query_genome = $genome_num + 1;
-
-		my $ref_order = $aligned_order{$ref_genome};
-		my @query_order;
-
-		foreach my $chrR (@$ref_order) {
-			if (exists $hash_match_best{$Syn_num}->{$chrR}) {
-				my $chrQ = $hash_match_best{$Syn_num}->{$chrR};
-				push @query_order, $chrQ;
+			for my $q (keys %{ $match{$Syn_num}{$r} })
+			{
+				my $s = $match{$Syn_num}{$r}{$q} // 0;
+				my $chr_len_R = $hash_Ginfo_ref->{$Gnum_R}->{'chr'}->{$r};
+				my $chr_len_Q = $hash_Ginfo_ref->{$Gnum_Q}->{'chr'}->{$q};
+				$match_ratio_R{$Syn_num}{$r}{$q} = $s / $chr_len_R;
+				$match_ratio_Q{$Syn_num}{$r}{$q} = $s / $chr_len_Q;
 			}
 		}
-		$aligned_order{$query_genome} = \@query_order;
-		$genome_num++;
 	}
-	
-    # G1 全部设为 '+'
-    $chr_orient{1}{$_} = '+' for keys %{$hash_Ginfo_ref->{1}{chr}};
-
-    # 依次传播到 G2、G3、…
-    $genome_num = 1;
-    for my $Syn_num (sort { $a <=> $b } keys %hash_match_best) {
-        my $ref_genome   = $genome_num;
-        my $query_genome = $genome_num + 1;
-		my $ref_order = $aligned_order{$ref_genome};
-		my @query_order;
-		foreach my $chrR (@$ref_order) {
-			if (exists $hash_match_best{$Syn_num}->{$chrR}) {
-				my $chrQ = $hash_match_best{$Syn_num}->{$chrR};
-				my $rel  = $hash_inversion{$Syn_num}->{$chrR}->{$chrQ};
-				if($Syn_num == 1)
-				{
-					$chr_orient{$query_genome}->{$chrQ} = $rel;
+	for my $Syn_num (sort { $a <=> $b } keys %match)
+	{
+		my $Gnum_R = $Syn_num;
+		my $Gnum_Q = $Syn_num + 1;
+		my (%best_R_to_Q, %best_Q_to_R);
+		#---------------------------------------
+		# 1. 为每个 r 找最佳的 q （R → Q）
+		#---------------------------------------
+		for my $r (keys %{ $match{$Syn_num} }) {
+			my @candidates;
+			for my $q (keys %{ $match{$Syn_num}{$r} }) {
+				my $score_R = $match_ratio_R{$Syn_num}{$r}{$q} // 0;
+				push @candidates, [$q, $score_R] if $score_R > 0;
+			}
+			next unless @candidates;
+			# 从大到小排序取最佳
+			@candidates = sort { $b->[1] <=> $a->[1] } @candidates;
+			my ($best_q, $best_score) = @{ $candidates[0] };
+			$best_R_to_Q{$r} = $best_q;
+		}
+		#---------------------------------------
+		# 2. 为每个 q 找最佳的 r （Q → R）
+		#---------------------------------------
+		for my $r (keys %{ $match{$Syn_num} }) {
+			for my $q (keys %{ $match{$Syn_num}{$r} }) {
+				my $score_Q = $match_ratio_Q{$Syn_num}{$r}{$q} // 0;
+				next if $score_Q <= 0;
+				# 如果 q 还没有 best r
+				if (!exists $best_Q_to_R{$q}) {
+					$best_Q_to_R{$q} = [$r, $score_Q];
 				}
-				else
-				{
-					if($rel eq '+'){$chr_orient{$query_genome}->{$chrQ} = $chr_orient{$ref_genome}->{$chrR};}
-					elsif($rel eq '-')
-					{
-						if($chr_orient{$ref_genome}->{$chrR} eq '+')
-						{
-							$chr_orient{$query_genome}->{$chrQ} = '-';
-						}
-						elsif($chr_orient{$ref_genome}->{$chrR} eq '-')
-						{
-							$chr_orient{$query_genome}->{$chrQ} = '+';
-						}
+				# 有的话比较分数
+				else {
+					my ($old_r, $old_score) = @{ $best_Q_to_R{$q} };
+					if ($score_Q > $old_score) {
+						$best_Q_to_R{$q} = [$r, $score_Q];
 					}
 				}
 			}
 		}
-        $genome_num++;
-    }
-	print"\nSort match:\n";
-	foreach my $GN(sort{$a<=>$b} keys %aligned_order)
-	{
-		my $GnameN = $hash_Ginfo_ref->{$GN}->{'name'};
-		#print"$GN $GnameN:\n";
-		my $GN2 = $aligned_order{$GN};
-		my $outputchr_ch;
-		my @arr_chr_chain;
-		foreach my $chr (@$GN2)
-		{
-			my $re1 = $chr_orient{$GN}->{$chr};
-			#print"$chr\t$re1\n";
-			$outputchr_ch = "$chr" . '[' . "$re1" . ']';
-			push(@arr_chr_chain,$outputchr_ch);
+		#---------------------------------------
+		# 3. 取双向最佳 hit（RBH）
+		#---------------------------------------
+		for my $r (keys %best_R_to_Q) {
+			my $q = $best_R_to_Q{$r};
+			next unless exists $best_Q_to_R{$q};
+			my ($best_r_for_q, $score) = @{ $best_Q_to_R{$q} };
+			# 必须互相选中才算双向最佳
+			if ($best_r_for_q eq $r) {
+				$hash_match_best{$Syn_num}{$r} = $q;
+				# inversion 标志
+				my $inv = $inversion0{$Syn_num}{$r}{$q} // 0;
+				$hash_inversion{$Syn_num}{$r}{$q} = $inv >= 0 ? '+' : '-';
+			}
+			else
+			{
+				$hash_match_best{$Syn_num}{$r} = 'None';
+				$hash_inversion{$Syn_num}{$r}{'None'} = '+';
+			}
 		}
-		my $output_merge = join(",",@arr_chr_chain);
-		#print "$GN $GnameN: @arr_chr_chain\n";
-		print "$GN $GnameN: $output_merge\n";
-		#print "$Gnum $Gname: @arr_chr\n";
 	}
-	print"\n";
+	my %chr_line;
+	my %strand_line;
+	my @sorted_1 = sort {
+		my ($an) = ($a =~ /(\d+)/);
+		my ($bn) = ($b =~ /(\d+)/);
+		$an ||= 0; $bn ||= 0;
+
+		# 先比较数字
+		my $cmp = $an <=> $bn;
+		if ($cmp != 0) { $cmp }
+
+		# 数字相同，取尾部字母作为次级关键字（忽略大小写）
+		else {
+			my ($asuf) = ($a =~ /([A-Za-z]+)$/);
+			my ($bsuf) = ($b =~ /([A-Za-z]+)$/);
+			($asuf // '') cmp ($bsuf // '')
+		}
+	} keys %{$hash_match_best{1}};
+
+	#my $RX = '';
+	my $numX = 0;
+	foreach my $r (@sorted_1)
+	{
+		$numX++;
+		my $RX = $r;
+		my @arr_chrline;
+		my @arr_strandline;
+		push(@arr_chrline,$r);
+		push(@arr_strandline,'+');
+		$off_chr{1}{$r} = 1;
+		foreach my $Syn_num (sort { $a <=> $b } keys %hash_match_best) {
+			my $q = $hash_match_best{$Syn_num}{$RX} // 'None';
+            my $strand = $hash_inversion{$Syn_num}{$RX}{$q} // '+';
+			$RX = $q;
+			push(@arr_chrline,$q);
+			push(@arr_strandline,$strand);
+			my $GnumQ = $Syn_num + 1;
+			$off_chr{$GnumQ}{$q} = 1;
+		}
+		$chr_line{$numX} = join(":",@arr_chrline);
+		$strand_line{$numX} = join(":",@arr_strandline);
+	}
+	
+	foreach my $Gnum (sort{$a<=>$b} keys %off_chr)
+	{
+		foreach my $chrX (sort keys %{$off_chr{$Gnum}})
+		{
+			my $valueoff = $off_chr{$Gnum}{$chrX};
+			my @arr_chrline;
+			my @arr_strandline;
+			if($valueoff == 0)
+			{
+				$numX++;
+				my $RX = $chrX;
+				for(my $i = 1;$i < $Gnum;$i++)
+				{
+					push(@arr_chrline,'None');
+					push(@arr_strandline,'+');
+				}
+				for(my $Syn_num = $Gnum; $Syn_num<=$Syn_max;$Syn_num++)
+				{
+					my $q = $hash_match_best{$Syn_num}{$RX} // 'None';
+					my $strand = $hash_inversion{$Syn_num}{$RX}{$q} // '+';
+					$RX = $q;
+					push(@arr_chrline,$q);
+					push(@arr_strandline,$strand);
+					my $GnumQ = $Syn_num + 1;
+					$off_chr{$GnumQ}{$q} = 1;
+				}
+				$chr_line{$numX} = join(":",@arr_chrline);
+				$strand_line{$numX} = join(":",@arr_strandline);
+			}
+		}
+	}
+	for(my $i = 1;$i <= $numX;$i++)
+	{
+		my @arr1 = split(":",$chr_line{$i});
+		my @arr2 = split(":",$strand_line{$i});
+		my $num_arr1 = scalar(@arr1);
+		my @arr3;
+		my @arr4;
+		for(my $j = 0;$j < $num_arr1;$j++)
+		{
+			my $strand_GAI = '+';
+			my @arr5;
+			for(my $k = 0;$k <= $j;$k++)
+			{
+				push(@arr5,$arr2[$k]);
+			}
+			my $strandG_num = 0;
+			foreach my $strandG (@arr5)
+			{
+				if($strandG eq '-'){$strandG_num++;}
+			}
+			if($strandG_num%2==0){$strand_GAI = '+';}
+			else{$strand_GAI = '-';}
+			if($arr1[$j] eq 'None'){$strand_GAI = '+';}
+			my $merge_chr_strand1 = $arr1[$j] . '[' . $arr2[$j] . ']';
+			my $merge_chr_strand2 = $arr1[$j] . '[' . $strand_GAI . ']';
+			my $kk = $j + 1;
+			$hash_read_chr_order{$kk}->{$i} = $arr1[$j];
+			if($arr1[$j] eq 'None')
+			{
+				my $chr_len = 1;
+				#$out_chr_len_strand{$kk}{$i}{$arr1[$j]} = '*' . $arr1[$j] . ':' . $chr_len . ':' . $arr1[$j] . '*:' . $strand_GAI;
+				$out_chr_len_strand{$kk}{$i}{$arr1[$j]} = $arr1[$j] . ':' . $chr_len . ':' . $arr1[$j] . '*:' . $strand_GAI;
+			}
+			else
+			{
+				my $chr_len = $hash_Ginfo_ref->{$kk}->{'chr'}->{$arr1[$j]};
+				my $chrGAI = $hash_chrGAI{$kk}->{$arr1[$j]};
+				$out_chr_len_strand{$kk}{$i}{$arr1[$j]} = $arr1[$j] . ':' . $chr_len . ':' . $chrGAI . ':' . $strand_GAI;
+			}
+			push(@arr3,$merge_chr_strand1);
+			push(@arr4,$merge_chr_strand2);
+		}
+		#my $outarr3 = join(":",@arr3);
+		my $outarr4 = join(":",@arr4);
+		#print"$i\t$outarr3\n";
+		print"$i\t$outarr4\n";
+		#print"\n";
+	}
+	foreach my $Gnum (sort{$a<=>$b} keys %out_chr_len_strand)
+	{
+		my $Gname = $hash_Ginfo_ref->{$Gnum}->{'name'};
+		print"$Gnum:$Gname\n";
+		my $sort_fileX = basename($hash_Ginfo_ref->{$Gnum}->{'fasta'});
+		$sort_fileX =~ s/\.bed$//;
+		$sort_fileX .= '.sort.bed';
+		my $sort_fileX1 = $out_sort_path . $sort_fileX;
+		open(my $out_fhsort, ">", $sort_fileX1) or die "Cannot open output file '$sort_fileX1': $!";
+		foreach my $chrnum (sort{$a<=>$b} keys %{$out_chr_len_strand{$Gnum}})
+		{
+			foreach my $chrX (sort keys %{$out_chr_len_strand{$Gnum}{$chrnum}})
+			{
+				my $outarr0 = $out_chr_len_strand{$Gnum}{$chrnum}{$chrX};
+				my @arr1 = split(/:/,$outarr0);
+				my $chr_namesort = $arr1[0];
+				my $chr_lensort = $arr1[1];
+				my $chr_namesortGai = $arr1[2];
+				my $chr_strandsort = $arr1[3];
+				$hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_namesort} = $chr_lensort;
+				$hash_chrGAI{$Gnum}->{$chr_namesort} = $chr_namesortGai;
+				$hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_namesort} = $chr_strandsort;
+				my $outarr1 = join("\t",@arr1);
+				print"$outarr1\n";
+				print $out_fhsort "$outarr1\n";
+			}
+		}
+		close $out_fhsort;
+		print"\n";
+	}
+	if(0){
+	foreach my $Gnum (sort{$a<=>$b} keys %{$hash_Ginfo_ref})
+	{
+		my $Gname = $hash_Ginfo_ref->{$Gnum}->{'name'};
+		print"test:$Gnum\t$Gname\n";
+		foreach my $chrX (sort keys %{$hash_Ginfo_ref->{$Gnum}->{'chr'}})
+		{
+			my $len0 = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chrX};
+			my $strand0 = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chrX};
+			my $chrnameGAI0 = $hash_chrGAI{$Gnum}->{$chrX};
+			print"test:$chrX\t$len0\t$chrnameGAI0\t$strand0\n";
+		}
+	}
+    exit(1);
+	}
 }
 
 sub draw_syn_block {
@@ -4236,11 +4426,8 @@ sub draw_syn_block {
 		$genome_num++;
 		my $ref_genome   = $genome_num;
 		my $query_genome = $genome_num + 1;
-		my @arr_chrR = @{$aligned_order{$ref_genome}};
-		my @arr_chrQ = @{$aligned_order{$query_genome}};
-		# 建立 chr => index 的映射，方便快速查找下标
-		my %posR = map { $arr_chrR[$_] => $_ } 0 .. $#arr_chrR;
-		my %posQ = map { $arr_chrQ[$_] => $_ } 0 .. $#arr_chrQ;
+		my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
+		my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
 		my $Syn_align = $hash_syninfo_ref->{$Syn_num}->{'align'};
 		open my $FL_align, "<", $Syn_align or die "Cannot open $Syn_align: $!";
 		while(<$FL_align>)
@@ -4256,14 +4443,25 @@ sub draw_syn_block {
 			my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
 			my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
 			my ($startR, $endR, $startQ, $endQ);
-
-			# 先检查 chr 是否存在于各自数组中
-			next unless exists $posR{$chrR};
-			next unless exists $posQ{$chrQ};
-			# 索引位置必须相同
-			if ($posR{$chrR} == $posQ{$chrQ}) {
-				my $strandR = $chr_orient{$ref_genome}->{$chrR};
-				my $strandQ = $chr_orient{$query_genome}->{$chrQ};
+			my $strandR = $hash_Ginfo_ref->{$ref_genome}->{'strand'}->{$chrR};
+			my $strandQ = $hash_Ginfo_ref->{$query_genome}->{'strand'}->{$chrQ};
+			my $Rnum = 0;
+			my $Qnum = 0;
+			my $chr_off_R = 0;
+			my $chr_off_Q = 0;
+			foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$ref_genome} })
+			{
+				my $chrX = $hash_read_chr_order{$ref_genome}{$numX};
+				if($chrR eq $chrX){$chr_off_R = 1;$Rnum = $numX;}
+			}
+			foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$query_genome} })
+			{
+				my $chrX = $hash_read_chr_order{$query_genome}{$numX};
+				if($chrQ eq $chrX){$chr_off_Q = 1;$Qnum = $numX;}
+			}
+			my $chr_off_RQnum = 1;
+			if($Rnum == $Qnum)
+			{
 				if($strandR eq '+')
 				{
 					$startR = $tem[1];
@@ -4302,7 +4500,7 @@ sub draw_syn_block {
 				elsif($strand eq '-'){$strand = 0;}
 				#### 这里写后续代码逻辑
 				#print "PASS: $chrR ↔ $chrQ (index=$posR{$chrR})\n";
-				my $chr_num = $posR{$chrR} + 1;
+				my $chr_num = $Rnum;
 				#my $strand = (($startR < $endR) == ($startQ < $endQ)) ? 1 : 0;
 				# 统一方向后算坐标
 				my $rect_x = $SVG_x;
@@ -4575,6 +4773,8 @@ sub draw_lineplot {
 		foreach my $chr_name (sort keys %{$hashG})
 		{
 			$chr_num++;
+			my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_name};
+			my $chr_lenX = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
 			my @anno_line;
 			my $rect_x = $SVG_x;
 			my $rect_y = $SVG_y + 2 + $Chrtop + ($chr_num - 1) * $genome_num_ref * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height) + ($genome_num - 1) * ($Chrtop + $ChrHight + $Chrdottom + $synteny_height);
@@ -4588,6 +4788,11 @@ sub draw_lineplot {
 				foreach my $end_anno (sort { $a <=> $b } keys %{ $CHR_anno->{$start_anno} }) {
 					my $anno_Win_size = abs($end_anno - $start_anno) + 1;
 					my $value = $CHR_anno->{$start_anno}->{$end_anno};
+					if($strandX eq '-')
+					{
+						$start_anno = $chr_lenX - $start_anno;
+						$end_anno = $chr_lenX - $end_anno;
+					}
 					my $height_ratio;
 					#if($value > 1){$min_max_value0 = 'normal';}
 					#elsif($value < 1){$min_max_value0 = 'ratio';}
@@ -4677,6 +4882,8 @@ sub draw_barplot {
 		foreach my $chr_name (sort keys %{$hashG})
 		{
 			$chr_num++;
+			my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_name};
+			my $chr_lenX = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
 			my @anno_line;
 			my @anno_piont;
 			my @ANNO_window;
@@ -4691,6 +4898,11 @@ sub draw_barplot {
 					my $anno_Win_size = abs($end_anno - $start_anno) + 1;
 					my $value = $CHR_anno->{$start_anno}->{$end_anno};
 					my $height_ratio;
+					if($strandX eq '-')
+					{
+						$start_anno = $chr_lenX - $start_anno;
+						$end_anno = $chr_lenX - $end_anno;
+					}
 					#if(($value > 1)){$min_max_value0 = 'normal';}
 					#elsif($value < 1){$min_max_value0 = 'ratio';}
 					if($min_max_value0 eq 'normal')
@@ -4785,6 +4997,8 @@ sub draw_rectangle {
 		foreach my $chr_name (sort keys %{$hashG})
 		{
 			$chr_num++;
+			my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_name};
+			my $chr_lenX = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
 			my @anno_line;
 			my @anno_piont;
 			my @ANNO_window;
@@ -4805,6 +5019,11 @@ sub draw_rectangle {
 					my $anno_Win_size = abs($end_anno - $start_anno) + 1;
 					my $value = $CHR_anno->{$start_anno}->{$end_anno};
 					my $height_ratio;
+					if($strandX eq '-')
+					{
+						$start_anno = $chr_lenX - $start_anno;
+						$end_anno = $chr_lenX - $end_anno;
+					}
 					#if($value > 1){$min_max_value0 = 'normal';}
 					#elsif($value < 1){$min_max_value0 = 'ratio';}
 					my $X1 = ($rect_x + (($start_anno + $end_anno)/2) / $scale);
@@ -4913,6 +5132,8 @@ sub draw_heatmap {
 		{
 			my $Glen = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
 			$chr_num++;
+			my $strandX = $hash_Ginfo_ref->{$Gnum}->{'strand'}->{$chr_name};
+			my $chr_lenX = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
 			my @anno_line;
 			my @anno_piont;
 			my @ANNO_window;
@@ -4934,6 +5155,11 @@ sub draw_heatmap {
 					my $anno_Win_size = abs($end_anno - $start_anno) + 1;
 					my $value = $CHR_anno->{$start_anno}->{$end_anno};
 					my $height_ratio;
+					if($strandX eq '-')
+					{
+						$start_anno = $chr_lenX - $start_anno;
+						$end_anno = $chr_lenX - $end_anno;
+					}
 					#if($value > 1){$min_max_value0 = 'normal';}
 					#elsif($value < 1){$min_max_value0 = 'ratio';}
 					if($min_max_value0 eq 'normal')
@@ -6500,26 +6726,25 @@ sub drawing_SVG2 {
 	{
 		my $Gname = $hash_Ginfo{$Gnum}->{'name'};
 		my $hashGX = $hash_read_chr_order{$Gnum};
-		my @arr_chr = sort{$hashGX->{$a} <=> $hashGX->{$b}} keys %{$hashGX};
 		$genome_num++;
-		my $chr_len_countX = 0;
-		foreach my $chr_name (@arr_chr)
+		foreach my $chr_num (sort{$a<=>$b} keys %{$hashGX})
 		{
-			 my $chr_num = $hash_read_chr_order{$Gnum}->{$chr_name};
+			 my $chr_name = $hash_read_chr_order{$Gnum}->{$chr_num};
 			 my $chr_len = $hash_Ginfo{$Gnum}->{'chr'}->{$chr_name};
-			 #print"\$Gnum:$Gnum:\$chr_num:$chr_num:\$chr_len:$chr_len:\$chr_name:$chr_name\n";
+			 #print"\$Gnum:$Gnum:\$Gname:$Gname:\$chr_num:$chr_num:\$chr_len:$chr_len:\$chr_name:$chr_name\n";
 			 if($genome_num == 1)
 			 {
 			     $hash_chr_max_len{$chr_num} = $chr_len;
 			 }
 			 else
 			 {
+				 my $chr_max_len = $hash_chr_max_len{$chr_num};
+				 #print"\$Gname:$Gname\t\$chr_name:$chr_name\t\$chr_len:$chr_len\t\$chr_max_len:$chr_max_len\n";
 				 if($chr_len > $hash_chr_max_len{$chr_num})
 				 {
 				     $hash_chr_max_len{$chr_num} = $chr_len;
 				 }
 			 }
-
 		}
 	}
 
@@ -6542,9 +6767,9 @@ sub drawing_SVG2 {
 	print"Canvas height: $SVG2_canvas_h mm\n";
 
 	#绘制共线性块
-	draw_syn2_block($SVG2,\%hash_syninfo,\%hash_Ginfo,$syntent_type,$genome_num,\%hash_chr_max_len,$chr_gap_len);
+	draw_syn2_block($SVG2,\%hash_syninfo,\%hash_Ginfo,$syntent_type,$genome_num,\%hash_chr_max_len,$chr_gap_len,\%{$config_ref});
 	#绘制染色体块及刻度线
-	draw_chr2_block($SVG2,\%hash_Ginfo,$genome_num,\%hash_chr_max_len,$chr_gap_len);
+	draw_chr2_block($SVG2,\%hash_Ginfo,$genome_num,\%hash_chr_max_len,$chr_gap_len,\%{$config_ref});
 
 	my $svg_file = $config_ref->{'save_info'}->{'savefig2'};
 	my $svg_pdf = 1;
@@ -6577,19 +6802,42 @@ sub drawing_SVG2 {
 }
 
 sub draw_syn2_block {
-	my ($SVG2, $hash_syninfo_ref, $hash_Ginfo_ref, $syn_type,$genome_num_ref,$hash_chr_max_len_ref,$chr_gap_len) = @_;
+	my ($SVG2, $hash_syninfo_ref, $hash_Ginfo_ref, $syn_type,$genome_num_ref,$hash_chr_max_len_ref,$chr_gap_len,$config_ref) = @_;
 	my $genome_num = 0;
 	my $off_SYN = 0;
 	my $off_INV = 0;
 	my $off_TRANS = 0;
 	my $off_INVTR = 0;
-    # 读取共线性信息文件
+	# 读取共线性信息文件
 	foreach my $Syn_num(sort{$a<=>$b} keys %{$hash_syninfo_ref})
 	{
 		$genome_num++;
 		my $ref_genome   = $genome_num;
 		my $query_genome = $genome_num + 1;
+		my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
+		my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
 		my $Syn_align = $hash_syninfo_ref->{$Syn_num}->{'align'};
+		if (exists $config_ref->{'genome_info'}->{'sort'}) {
+			foreach my $numX1 (sort{$a<=>$b} keys %{ $hash_read_chr_order{$ref_genome} })
+			{
+				my $chrXR = $hash_read_chr_order{$ref_genome}->{$numX1};
+				foreach my $numX2 (sort{$a<=>$b} keys %{ $hash_read_chr_order{$query_genome} })
+				{
+					my $chrXQ = $hash_read_chr_order{$query_genome}->{$numX2};
+					if($numX1 == $numX2)
+					{
+						my $inv_plus = $inversion_plus{$Syn_num}{$chrXR}{$chrXQ} // 0;
+						my $inv_minus = $inversion_minus{$Syn_num}{$chrXR}{$chrXQ} // 0;
+						$inv_plus = commify($inv_plus);
+						$inv_minus = commify($inv_minus);
+						if(($chrXR ne 'None')and($chrXQ ne 'None'))
+						{
+							print"$Syn_num:$GnameR vs $GnameQ:$chrXR vs $chrXQ: $inv_plus:$inv_minus\n";
+						}
+					}
+				}
+			}
+		}
 		open my $FL_align, "<", $Syn_align or die "Cannot open $Syn_align: $!";
 		while(<$FL_align>)
 		{
@@ -6604,11 +6852,29 @@ sub draw_syn2_block {
 			my $GnameR = $hash_Ginfo_ref->{$ref_genome}->{'name'};
 			my $GnameQ = $hash_Ginfo_ref->{$query_genome}->{'name'};
 			my ($startR, $endR, $startQ, $endQ);
-			#my $strandR = $chr_orient{$ref_genome}->{$chrR};
-			#my $strandQ = $chr_orient{$query_genome}->{$chrQ};
-			my $strandR = '+';
-			my $strandQ = '+';
-			if (exists $hash_read_chr_order{$ref_genome}->{$chrR} && exists $hash_read_chr_order{$query_genome}->{$chrQ})
+			my $strandR = $hash_Ginfo_ref->{$ref_genome}->{'strand'}->{$chrR};
+			my $strandQ = $hash_Ginfo_ref->{$query_genome}->{'strand'}->{$chrQ};
+			my $Rnum = 0;
+			my $Qnum = 0;
+			my $chr_off_R = 0;
+			my $chr_off_Q = 0;
+			foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$ref_genome} })
+			{
+				my $chrX = $hash_read_chr_order{$ref_genome}{$numX};
+				if($chrR eq $chrX){$chr_off_R = 1;$Rnum = $numX;}
+			}
+			foreach my $numX (sort{$a<=>$b} keys %{ $hash_read_chr_order{$query_genome} })
+			{
+				my $chrX = $hash_read_chr_order{$query_genome}{$numX};
+				if($chrQ eq $chrX){$chr_off_Q = 1;$Qnum = $numX;}
+			}
+			my $chr_off_RQnum = 1;
+			if (exists $config_ref->{'synteny_info'}->{'translocation'}) {
+				my $translocation_off = lc($config_ref->{'synteny_info'}->{'translocation'});
+				if($translocation_off eq 'yes'){$chr_off_RQnum = 1;}
+				elsif($translocation_off eq 'no'){if($Qnum != $Rnum){$chr_off_RQnum = 0;}}
+			}
+			if(($chr_off_R == 1)and($chr_off_Q == 1)and($chr_off_RQnum == 1))
 			{
 				if($strandR eq '+')
 				{
@@ -6647,27 +6913,27 @@ sub draw_syn2_block {
 				if($strand eq '+'){$strand = 1;}
 				elsif($strand eq '-'){$strand = 0;}
 				#my $strand = (($startR < $endR) == ($startQ < $endQ)) ? 1 : 0;
-				my $Rnum = $hash_read_chr_order{$ref_genome}->{$chrR} - 1;
-				my $Qnum = $hash_read_chr_order{$query_genome}->{$chrQ} - 1;
+				#my $Rnum = $hash_read_chr_order{$ref_genome}->{$chrR} - 1;
+				#my $Qnum = $hash_read_chr_order{$query_genome}->{$chrQ} - 1;
 				my $chrlen_maxR = 0;
 				my $chrlen_maxQ = 0;
-				if($Rnum != 0)
+				if($Rnum != 1)
 				{
 					my $chr_lenX = 0;
-					for(my $j=1;$j<=$Rnum;$j++)
+					for(my $j=1;$j<$Rnum;$j++)
 					{
 						$chr_lenX += $hash_chr_max_len_ref->{$j}/$scale2;
 					}
-					$chrlen_maxR = $chr_lenX + $Rnum * $chr_gap_len;
+					$chrlen_maxR = $chr_lenX + ($Rnum - 1) * $chr_gap_len;
 				}
-				if($Qnum != 0)
+				if($Qnum != 1)
 				{
 					my $chr_lenX = 0;
-					for(my $j=1;$j<=$Qnum;$j++)
+					for(my $j=1;$j<$Qnum;$j++)
 					{
 						$chr_lenX += $hash_chr_max_len_ref->{$j}/$scale2;
 					}
-					$chrlen_maxQ = $chr_lenX + $Qnum * $chr_gap_len;
+					$chrlen_maxQ = $chr_lenX + ($Qnum - 1) * $chr_gap_len;
 				}
 				my $rect_x = $SVG_x;
 				my $rect_y = $SVG_y + 2 + $ChrHight + ($genome_num - 1) * ($ChrHight + $synteny_height);
@@ -6692,7 +6958,8 @@ sub draw_syn2_block {
 				#my $fill_color = $strand == 1 ? "#DFDFE1" : "#E56C1A";
 				#my $fill_color = $strand == 1 ? "$synteny_color" : "$inversion_color";
 				my $fill_color = $synteny_color;
-				if($hash_read_chr_order{$ref_genome}->{$chrR} eq $hash_read_chr_order{$query_genome}->{$chrQ})
+				#if($hash_read_chr_order{$ref_genome}->{$chrR} eq $hash_read_chr_order{$query_genome}->{$chrQ})
+				if($Rnum == $Qnum)
 				{
 					$fill_color = $strand == 1 ? "$synteny_color" : "$inversion_color";
 					if($strand == 1){$off_SYN = 1;}
@@ -6825,7 +7092,7 @@ sub draw_syn2_block {
 }
 
 sub draw_chr2_block {
-	my ($SVG2, $hash_Ginfo_ref, $genome_num_ref,$hash_chr_max_len_ref,$chr_gap_len) = @_;
+	my ($SVG2, $hash_Ginfo_ref, $genome_num_ref,$hash_chr_max_len_ref,$chr_gap_len,$config_ref) = @_;
 	#my %aligned_order;  # 存储每个基因组的染色体顺序（最终与 G1 对齐）
 	# 输出最终对齐顺序
 	foreach my $Gnum (sort { $a <=> $b } keys %{$hash_Ginfo_ref})
@@ -6839,22 +7106,19 @@ sub draw_chr2_block {
 			if ($chr_tags =~ /opacity:\s*['"]?([\d.]+)['"]?/){$Chropacity = $1;}
 			if ($chr_tags =~ /color:\s*['"]?([^'";]+)['"]?/){$Chrcolor = $1;}
 		}
-		my @arr_chr = sort{$hashG->{$a} <=> $hashG->{$b}} keys %{$hashG};   # 用哈希键名代表染色体列表
-		my $chr_number = 0;
-		foreach my $chr_name(@arr_chr)
+		foreach my $numX(sort{$a<=>$b} keys %{$hashG})
 		{
-			$chr_number++;
+			my $chr_name = $hash_read_chr_order{$Gnum}->{$numX};
 			my $chr_len = $hash_Ginfo_ref->{$Gnum}->{'chr'}->{$chr_name};
-			my $numX = $chr_number - 1;
 			my $chrlen_maxX = 0;
-			if($numX != 0)
+			if($numX != 1)
 			{
 				my $chr_lenX = 0;
-				for(my $j=1;$j<=$numX;$j++)
+				for(my $j=1;$j<$numX;$j++)
 				{
 					$chr_lenX += $hash_chr_max_len_ref->{$j}/$scale2;
 				}
-				$chrlen_maxX = $chr_lenX + $numX * $chr_gap_len;
+				$chrlen_maxX = $chr_lenX + ($numX - 1) * $chr_gap_len;
 			}
 			##### print "$chr_name\t$chr_len\n";
 			my $rect_x = $SVG_x + $chrlen_maxX;
@@ -6908,8 +7172,7 @@ sub draw_chr2_block {
 					}
 				)->cdata("$arr_name[0]");
 			}
-
-			if($chr_number == 1)
+			if($numX == 1)
 			{
 				$SVG2 -> text(
 					 x => ($rect_x - 2),
