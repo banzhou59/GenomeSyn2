@@ -125,8 +125,8 @@ while (<$IN>) {
 	my ($chr, $start, $end, $strand) = @cols[0,3,4,6];
 	my ($id) = $cols[8] =~ /Name=([^;]+)/;
 	$id ||= ($cols[8] =~ /ID=([^;]+)/)[0];  # 如果没有Name则用ID
-	# 只输出以 .1 或 -1 结尾的 mRNA
-	if ($id and $id =~ /(?:\.1|-1)$/) {
+	# 只输出以 .1 或 -1 或 .t1 或 .T1结尾的 mRNA
+	if ($id and $id =~ /(?:\.1|-1|\.t1|\.T1|\.[A-Za-z0-9_]+1)$/) {
 		print $OUT1 "$id\t$chr\t$start\t$end\t$strand\n";
 		print $OUT2 "$id\n";
 	}
