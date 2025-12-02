@@ -204,6 +204,9 @@ GenomeSyn2 --conf anno.conf
 gonomes_filetype = bed
 # List of genome chromosome sizes or fasta files
 gonomes_list = chr_length.info.tsv
+# Chromosome sorting function (yes or no)
+# sort = yes
+
 
 [synteny_info]
 # line_type = (curve/line)
@@ -211,6 +214,8 @@ gonomes_list = chr_length.info.tsv
 line_type = curve
 # File containing synteny information between genomes.
 synteny_list = synteny.info.tsv
+# Toggle for translocation visualization (yes or no)
+# translocation = no
 
 [save_info]
 # figure_type = (svg/pdf/png)
@@ -319,6 +324,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
