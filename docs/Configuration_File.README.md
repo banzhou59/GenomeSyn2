@@ -141,6 +141,19 @@ Chr09_T  24851483	Chr09  +
 Chr10_T  25307205	Chr10  +
 Chr11_T  32146216	Chr11  +
 Chr12_T  24630051	Chr12  +
+
+# less ./fa_bed/sort_fa_bed/12.L.XTT22.genome.sort.bed
+#chr_id  chr_len    chr_display_id  strand
+None    1       None*   +
+None    1       None*   +
+None    1       None*   +
+None    1       None*   +
+None    1       None*   +
+None    1       None*   +
+Chr7L   66378856        Chr7L   +
+None    1       None*   +
+None    1       None*   +
+Chr10L  68124741        Chr10L  +
 ```
 
 ```
