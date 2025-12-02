@@ -9,6 +9,8 @@ Below is an example total.conf file with explanations for each section:
 gonomes_filetype = bed
 # List of genome chromosome sizes or fasta files
 gonomes_list = chr_length.info.tsv
+# Chromosome sorting function (yes or no)
+# sort = yes
 
 [synteny_info]
 # line_type = (curve/line)
@@ -16,6 +18,8 @@ gonomes_list = chr_length.info.tsv
 line_type = curve
 # File containing synteny information between genomes.
 synteny_list = synteny.info.tsv
+# Toggle for translocation visualization (yes or no)
+# translocation = no
 
 [save_info]
 # figure_type = (svg/pdf/png)
@@ -124,19 +128,19 @@ anno_list = [PAV.info.tsv,SNP.info.tsv,TE.info.tsv,GC.info.tsv,Gypsy.info.tsv,Co
 
 ```
 # less ./fa_bed/2.T.genome.bed
-#chr_id  chr_len    chr_display_id
-Chr01_T  44771367	Chr01
-Chr02_T  37771395	Chr02
-Chr03_T  39714050	Chr03
-Chr04_T  37114610	Chr04
-Chr05_T  30542789	Chr05
-Chr06_T  32873173	Chr06
-Chr07_T  29833582	Chr07
-Chr08_T  30808895	Chr08
-Chr09_T  24851483	Chr09
-Chr10_T  25307205	Chr10
-Chr11_T  32146216	Chr11
-Chr12_T  24630051	Chr12
+#chr_id  chr_len    chr_display_id  strand
+Chr01_T  44771367	Chr01  +
+Chr02_T  37771395	Chr02  +
+Chr03_T  39714050	Chr03  +
+Chr04_T  37114610	Chr04  +
+Chr05_T  30542789	Chr05  +
+Chr06_T  32873173	Chr06  +
+Chr07_T  29833582	Chr07  +
+Chr08_T  30808895	Chr08  +
+Chr09_T  24851483	Chr09  +
+Chr10_T  25307205	Chr10  +
+Chr11_T  32146216	Chr11  +
+Chr12_T  24630051	Chr12  +
 ```
 
 ```
