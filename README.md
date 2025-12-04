@@ -315,7 +315,7 @@ GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin
 ```
 - 📄 **SNP_identity.<bin_size>.bed** - This BED file reports the number of SNPs with identical genotypes shared among all samples within each genomic bin. The genomic bin size is defined by the --bin parameter.
 - 📄 **SNP_density.<bin_size>.bed** - This BED file summarizes the SNP counts per sample within each genomic bin. The bin size is specified by the --bin parameter.
-- 📕 **GenomeSyn.<bin_size>.pdf** - Ancestry Deconvolution view.
+- 📕 **GenomeSyn2.<bin_size>.pdf** - Ancestry Deconvolution view.
 
 ## Configuration File Structure
 
@@ -324,6 +324,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
