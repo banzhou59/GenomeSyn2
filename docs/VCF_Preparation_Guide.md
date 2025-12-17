@@ -27,7 +27,7 @@ bcftools view -v snps Output1.raw.vcf.gz -Oz -o Output1.raw.snps.vcf.gz
 
 bcftools index Output1.raw.snps.vcf.gz
 
-bcftools filter -s LowQual -e 'QUAL<30 || INFO/DP<5' Output1.raw.snps.vcf.gz -Oz -o Output1.raw.snps.filtered.vcf.gz
+bcftools filter -s LowQual -e 'QUAL<20 || INFO/DP<3' Output1.raw.snps.vcf.gz -Oz -o Output1.raw.snps.filtered.vcf.gz
 
 bcftools index Output1.raw.snps.filtered.vcf.gz
 
@@ -59,19 +59,9 @@ samtools index Progeny_vs_Parent2.sort.bam
 
 bcftools mpileup -Ou -f Reference.fasta -a FORMAT/AD,FORMAT/DP --threads 30  Progeny_vs_Parent1.sort.bam Progeny_vs_Parent2.sort.bam Progeny_vs_Progeny.sort.bam | bcftools call -mv --ploidy 1 -Oz --threads 30 -o Output2.raw.vcf.gz
 
-bcftools view -v snps Output2.raw.vcf.gz -Oz -o Output2.raw.snps.vcf.gz
+bcftools view -v snps Output2.raw.vcf.gz -Oz -o Output2.snps.vcf.gz
 
-bcftools index Output2.raw.snps.vcf.gz
-
-bcftools filter -s LowQual -e 'QUAL<30 || INFO/DP<5' Output2.raw.snps.vcf.gz -Oz -o Output2.raw.snps.filtered.vcf.gz
-
-bcftools index Output2.raw.snps.filtered.vcf.gz
-
-bcftools view -f PASS Output2.raw.snps.filtered.vcf.gz -Oz -o Output2.snps.pass.vcf.gz
-
-bcftools index Output2.snps.pass.vcf.gz
-
-gunzip Output2.snps.pass.vcf.gz
+gunzip Output2.snps.vcf.gz
 ```
 
 
@@ -124,6 +114,7 @@ Chr01  50001  100000 5    425      2
 Chr01  100001 150000 13   390      9
 ...
 ```
+
 
 
 
