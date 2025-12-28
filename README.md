@@ -88,6 +88,7 @@ GenomeSyn-II is an integrated and efficient visualization platform designed for 
       <td>Source code, bioconda and web servers</td>
     </tr>
 </table>
+
 ## Installation
 
 GenomeSyn2 provides three options for installing the required dependencies:
@@ -363,6 +364,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
