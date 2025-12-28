@@ -6,6 +6,7 @@
 [![Bioconda Downloads](https://anaconda.org/bioconda/genomesyn2/badges/downloads.svg)](https://anaconda.org/bioconda/genomesyn2)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/genomesyn2/badges/latest_release_date.svg)](https://anaconda.org/bioconda/genomesyn2)
 
+
 <table style="width:100%; max-width:100%; border-collapse: collapse;">
     <tr>
       <th>Author</th>
@@ -364,6 +365,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
