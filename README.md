@@ -47,6 +47,8 @@
 GenomeSyn-II is an integrated and efficient visualization platform designed for large-scale comparative genomics, pangenome analysis, and ancestry deconvolution. It supports genome-, chromosome-, and gene-scale visualization, enabling researchers to intuitively explore synteny, structural variation, genome annotation layers, and ancestry contributions within a single unified framework.
 <div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
 
+
+
 <table style="width:100%; max-width:100%; border-collapse: collapse;">
     <tr>
       <th>Feature</th>
@@ -365,6 +367,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
