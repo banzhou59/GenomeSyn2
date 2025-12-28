@@ -46,6 +46,48 @@
 GenomeSyn-II is an integrated and efficient visualization platform designed for large-scale comparative genomics, pangenome analysis, and ancestry deconvolution. It supports genome-, chromosome-, and gene-scale visualization, enabling researchers to intuitively explore synteny, structural variation, genome annotation layers, and ancestry contributions within a single unified framework.
 <div align="center"><img src="images/Figure1.png" alt="GenomeSyn2 Figure1" width="800"/></div>
 
+<table style="width:100%; max-width:100%; border-collapse: collapse;">
+    <tr>
+      <th>Feature</th>
+      <th>GenomeSyn</th>
+      <th>GenomeSyn-II</th>
+    </tr>
+    <tr>
+      <td>Sequence alignment</td>
+      <td>Genome-level alignment (MUMmer, Minimap2)</td>
+      <td>Genome-level alignment (MUMmer, Minimap2); Protein sequence alignment (BLASTP, MMseqs2, DIAMOND)</td>
+    </tr>
+    <tr>
+      <td>Number of input genomes</td>
+      <td>2-3 genomes</td>
+      <td>≥ 2 genomes (no upper limit)</td>
+    </tr>
+    <tr>
+      <td>Genome ordering and manual adjustment</td>
+      <td>Automatic ordering only</td>
+      <td>Automatic ordering with optional manual adjustment</td>
+    </tr>
+    <tr>
+      <td>Annotation visualization</td>
+      <td>Limited to specific annotation types; fixed visualization styles</td>
+      <td>Supports arbitrary annotation types (BED or GFF3 format) with flexible visualization styles, including bar plot, line plot, heatmap, and rectangle</td>
+    </tr>
+    <tr>
+      <td>Local Synteny Exploration</td>
+      <td>Not supported</td>
+      <td>Supported</td>
+    </tr>
+    <tr>
+      <td>Ancestry Deconvolution</td>
+      <td>Not supported</td>
+      <td>Supported</td>
+    </tr>
+    <tr>
+      <td>Multiple platforms</td>
+      <td>Source code, Windows, macOS and web servers</td>
+      <td>Source code, bioconda and web servers</td>
+    </tr>
+</table>
 ## Installation
 
 GenomeSyn2 provides three options for installing the required dependencies:
@@ -321,6 +363,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 ## Citation
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
