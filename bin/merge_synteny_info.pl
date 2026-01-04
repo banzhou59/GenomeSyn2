@@ -57,16 +57,17 @@ USAGE
     exit;
 }
 $alignType = lc($alignType);
-#mmseqs的第1列和第2列是正确的$ref、$query
-#blastp和diamond的比对文件输出第1列和第2列是反的
-if(($alignType eq 'blastp') or ($alignType eq 'diamond'))
-{
-	my $key1 = $ref_coord;
-	my $key2 = $query_coord;
-	$ref_coord = $key2;
-	$query_coord = $key1;
+if(0){
+	#mmseqs的第1列和第2列是正确的$ref、$query
+	#blastp和diamond的比对文件输出第1列和第2列是反的
+	if(($alignType eq 'blastp') or ($alignType eq 'diamond'))
+	{
+		my $key1 = $ref_coord;
+		my $key2 = $query_coord;
+		$ref_coord = $key2;
+		$query_coord = $key1;
+	}
 }
-
 
 # 默认输出名
 my $prefix1 = $align_file;
