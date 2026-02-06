@@ -320,7 +320,7 @@ GenomeSyn2 --type identity --vcf ./parents.progeny.snps.genotype.Chr01.vcf --bin
 
 Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md) for details on the configuration file format.
 
-
+## Comparison between GenomeSyn and GenomeSyn-II
 
 <table style="width:100%; max-width:100%; border-collapse: collapse;">
     <tr>
@@ -369,6 +369,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 Zhou, Z., Zhao, H., Chai, Y., Zhao, R., Qian, Y., Zhong, Y., Shao, Y., Chen, L., Song, J.,  **2026**. GenomeSyn-II: a comparative genomics framework integrating synteny visualization. ***J. Genet. Genomics***. [https://doi.org/10.1016/j.jgg.2026.01.011](https://doi.org/10.1016/j.jgg.2026.01.011)
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
