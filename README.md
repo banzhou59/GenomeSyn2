@@ -277,10 +277,12 @@ savefig1 = GenomeSyn2.figure1.pdf
 ```
 ```
 less region_list.info.tsv
+------------------------------------------
 1  MH63:Chr10:24,850,000-24,885,000
 2  T:Chr10:24,597,000-24,632,000
 3  K:Chr10:23,167,000-23,202,000
 4  R:Chr10:23,287,000-23,322,000
+------------------------------------------
 ```
 
 ## 4. Ancestry Deconvolution view:
@@ -377,6 +379,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 Zhou, Z., Zhao, H., Chai, Y., Zhao, R., Qian, Y., Zhong, Y., Shao, Y., Chen, L., Song, J.,  **2026**. GenomeSyn-II: a comparative genomics framework integrating synteny visualization. ***J. Genet. Genomics***. [https://doi.org/10.1016/j.jgg.2026.01.011](https://doi.org/10.1016/j.jgg.2026.01.011)
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
