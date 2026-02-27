@@ -61,9 +61,9 @@ conda install bioconda::genomesyn2
 2.conda installation environment.yml
 
 ```
-wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.0.0.tar.gz
+wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.1.0.tar.gz
 
-tar -zxvf GenomeSyn2-1.0.0.tar.gz
+tar -zxvf GenomeSyn2-1.1.0.tar.gz
 
 cd ./GenomeSyn2/
 
@@ -126,9 +126,9 @@ chmod +x *.pl *.sh
 
 # or
 
-wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.0.0.tar.gz
+wget https://github.com/banzhou59/GenomeSyn2/releases/download/v1.0.0/GenomeSyn2-1.1.0.tar.gz
 
-tar -zxvf GenomeSyn2-1.0.0.tar.gz
+tar -zxvf GenomeSyn2-1.1.0.tar.gz
 
 # To make this change permanent, add the line to your ~/.bashrc file and then run source ~/.bashrc to apply it immediately.
 
@@ -383,6 +383,7 @@ Please refer to [Configuration_File.README.md](docs/Configuration_File.README.md
 Zhou, Z., Zhao, H., Chai, Y., Zhao, R., Qian, Y., Zhong, Y., Shao, Y., Chen, L., Song, J.,  **2026**. GenomeSyn-II: a comparative genomics framework integrating synteny visualization. ***J. Genet. Genomics***. [https://doi.org/10.1016/j.jgg.2026.01.011](https://doi.org/10.1016/j.jgg.2026.01.011)
 
 Zhou, Z., Yu, Z., Huang, X., Liu, J., Guo, Y., Chen, L., Song, J., **2022**. GenomeSyn: a bioinformatics tool for visualizing genome synteny and structural variations. ***J. Genet. Genomics*** 49, 1174-1176. [https://doi.org/10.1016/j.jgg.2022.03.013](https://doi.org/10.1016/j.jgg.2022.03.013)
+
 
 
 
